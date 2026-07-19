@@ -61,31 +61,28 @@ export default function ThemeEditor({ theme, setTheme, accentColor, setAccentCol
         </div>
       </div>
 
-      {/* Button Style */}
+      {/* Button Radius */}
       <div>
-        <span className="input-label">Kształt przycisków</span>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '8px' }}>
-          {[
-            { id: 'pill', label: 'Pigułka', radius: '999px' },
-            { id: 'rounded', label: 'Zaokrąglone', radius: '12px' },
-            { id: 'sharp', label: 'Proste', radius: '0px' }
-          ].map(s => (
-            <button key={s.id} type="button"
-              onClick={() => setButtonStyle && setButtonStyle(s.id)}
-              style={{
-                background: buttonStyle === s.id ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.02)',
-                border: buttonStyle === s.id ? '2px solid #fff' : '2px solid var(--border-light)',
-                borderRadius: '12px',
-                padding: '16px 8px',
-                cursor: 'pointer',
-                color: 'var(--text-primary)',
-                transition: 'all 0.2s',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px'
-              }}>
-              <div style={{ width: '40px', height: '20px', background: accentColor, borderRadius: s.radius }} />
-              <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{s.label}</span>
-            </button>
-          ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="input-label">Zaokrąglenie przycisków</span>
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+            {buttonStyle === 'pill' ? 'Pigułka' : (buttonStyle === 'sharp' ? 'Proste' : 'Zaokrąglone')}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '12px' }}>
+          <span style={{ fontSize: '18px' }}>⬛</span>
+          <input 
+            type="range" 
+            min="0" 
+            max="40" 
+            value={buttonStyle === 'sharp' ? 0 : (buttonStyle === 'pill' ? 40 : (buttonStyle === 'rounded' ? 14 : parseInt(buttonStyle) || 14))} 
+            onChange={e => {
+              const val = e.target.value;
+              setButtonStyle(val.toString());
+            }}
+            style={{ flex: 1, accentColor: accentColor }}
+          />
+          <span style={{ fontSize: '18px', filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.5))' }}>⬤</span>
         </div>
       </div>
 

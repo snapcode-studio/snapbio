@@ -314,13 +314,18 @@ export default function Dashboard() {
                       </div>
                     );
                   }
-                  const bRadius = buttonStyle === 'sharp' ? '0px' : (buttonStyle === 'rounded' ? '12px' : '999px');
+                  const bRadius = buttonStyle === 'sharp' ? '0px' : (buttonStyle === 'rounded' ? '12px' : (buttonStyle === 'pill' ? '999px' : `${buttonStyle}px`));
                   const bBg = buttonVariant === 'outline' ? 'transparent' : accentColor;
                   const bBorder = buttonVariant === 'outline' ? `2px solid ${accentColor}` : '1px solid rgba(255,255,255,0.05)';
                   const bColor = buttonVariant === 'outline' ? themeData.text : (themeData.btnText || '#000');
 
+                  let finalUrl = (link.url || '').trim();
+                  if (finalUrl && !/^https?:\/\//i.test(finalUrl) && !/^(mailto|tel|sms):/i.test(finalUrl)) {
+                    finalUrl = `https://${finalUrl}`;
+                  }
+
                   return (
-                    <div key={link.id} style={{
+                    <a key={link.id} href={finalUrl || '#'} target="_blank" rel="noopener noreferrer" style={{
                       background: bBg,
                       color: bColor,
                       borderRadius: bRadius,
@@ -334,7 +339,8 @@ export default function Dashboard() {
                       width: link.halfWidth ? 'calc(50% - 6px)' : '100%',
                       boxShadow: buttonVariant === 'outline' ? 'none' : `0 4px 16px ${accentColor}33`,
                       border: bBorder,
-                      letterSpacing: '-0.01em'
+                      letterSpacing: '-0.01em',
+                      textDecoration: 'none'
                     }} className={link.animation ? `anim-${link.animation}` : ''}>
                       <div style={{ position: 'absolute', left: '16px', display: 'flex', alignItems: 'center' }}>
                         {link.icon && link.icon.startsWith('http') ? (
@@ -346,7 +352,7 @@ export default function Dashboard() {
                       <span style={{ textAlign: 'center', width: '100%', padding: '0 24px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {link.title || 'Mój link'}
                       </span>
-                    </div>
+                    </a>
                   );
                 })}
                 {links.length === 0 && (

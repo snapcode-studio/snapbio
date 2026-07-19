@@ -266,7 +266,7 @@ export default function PublicProfile() {
               }
 
               // Styling logic
-              const bRadius = buttonStyle === 'sharp' ? '0px' : (buttonStyle === 'rounded' ? '14px' : '999px');
+              const bRadius = buttonStyle === 'sharp' ? '0px' : (buttonStyle === 'rounded' ? '14px' : (buttonStyle === 'pill' ? '999px' : `${buttonStyle}px`));
               const bBg = buttonVariant === 'outline' ? 'transparent' : accent;
               const bBorder = buttonVariant === 'outline' ? `2px solid ${accent}` : `1px solid rgba(255,255,255,0.05)`;
               const bColor = buttonVariant === 'outline' ? themeData.text : btnTextColor;
