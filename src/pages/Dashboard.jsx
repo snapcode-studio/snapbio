@@ -344,25 +344,15 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
-        </div>
 
           {/* ========== LEFT: Preview ========== */}
           <div className="preview-section" style={{ position: 'sticky', top: '100px' }}>
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
               <span className="input-label">Podgląd na żywo</span>
             </div>
-            <div style={{
+            <div className="preview-phone" style={{
               background: themeData.bg,
-              borderRadius: '40px', // More modern phone frame
-              padding: '24px 20px',
-              minHeight: '600px',
-              border: '8px solid var(--bg-deep)', // Thicker border for phone look
-              outline: '1px solid var(--border-light)',
               fontFamily: `'${font}', sans-serif`,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              transition: 'background 0.4s ease',
               position: 'relative'
             }}>
               
@@ -518,8 +508,8 @@ export default function Dashboard() {
             </div>
 
           </div>
-
-                </div>
+        </div>
+      </div>
     </>
   );
 }
