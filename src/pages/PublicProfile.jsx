@@ -19,7 +19,8 @@ export default function PublicProfile() {
         const snap = await getDocs(q);
         if (snap.empty) { setNotFound(true); setLoading(false); return; }
         const data = snap.docs[0].data();
-        setProfile(data.bioProfile || {});
+        const uid = snap.docs[0].id;
+        setProfile({ ...data.bioProfile, uid: data.snapMenuUid || uid });
       } catch (e) {
         console.error(e);
         setNotFound(true);
@@ -131,6 +132,37 @@ export default function PublicProfile() {
                 );
               }
               
+              if (link.type === 'snapmenu') {
+                return (
+                  <a
+                    key={link.id || i}
+                    href={`https://menu.getsnap.space/menu.html?id=${profile.uid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '14px 20px',
+                      borderRadius: '14px',
+                      background: accent,
+                      color: btnTextColor,
+                      textDecoration: 'none',
+                      fontWeight: 700,
+                      fontSize: '15px',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      boxShadow: `0 4px 16px ${accent}44`,
+                      animationDelay: `${i * 0.07}s`,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
+                  >
+                    <span style={{ fontSize: '20px', flexShrink: 0 }}>🍽️</span>
+                    <span style={{ flex: 1, textAlign: 'center' }}>{link.title || 'Nasze Menu'}</span>
+                  </a>
+                );
+              }
+
               if (!link.url) return null;
 
               return (

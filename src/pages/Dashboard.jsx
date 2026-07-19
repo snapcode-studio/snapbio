@@ -207,6 +207,25 @@ export default function Dashboard() {
                       </div>
                     );
                   }
+                  if (link.type === 'snapmenu') {
+                    return (
+                      <div key={link.id} style={{
+                        background: accentColor,
+                        color: themeData.btnText || '#000',
+                        borderRadius: '12px',
+                        padding: '12px',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                      }}>
+                        <span style={{ fontSize: '18px' }}>🍽️</span>
+                        <span>{link.title || 'Nasze Menu'}</span>
+                      </div>
+                    );
+                  }
                   return (
                     <div key={link.id} style={{
                       background: accentColor,
@@ -272,7 +291,7 @@ export default function Dashboard() {
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
                   Przeciągnij ⠿ aby zmienić kolejność. Kliknij emoji aby zmienić ikonę.
                 </p>
-                <LinkEditor links={links} setLinks={setLinks} />
+                <LinkEditor links={links} setLinks={setLinks} hasSnapMenu={hasSnapMenu} />
               </div>
             )}
 

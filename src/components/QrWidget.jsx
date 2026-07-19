@@ -11,8 +11,8 @@ export default function QrWidget({ url, label }) {
     if (!url || !containerRef.current) return;
 
     qrRef.current = new QRCodeStyling({
-      width: 280,
-      height: 280,
+      width: 200,
+      height: 200,
       data: url,
       image: '/favicon-96x96.png',
       dotsOptions: { color: '#0a0a0c', type: 'rounded' },
