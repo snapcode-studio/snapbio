@@ -180,10 +180,26 @@ export default function PublicProfile() {
           {/* Social Icons Row */}
           {(profile.socials?.instagram || profile.socials?.tiktok || profile.socials?.facebook || profile.socials?.twitter) && (
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '32px' }}>
-              {profile.socials.instagram && <a href={profile.socials.instagram} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Instagram" /></a>}
-              {profile.socials.tiktok && <a href={profile.socials.tiktok} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="TikTok" /></a>}
-              {profile.socials.facebook && <a href={profile.socials.facebook} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Facebook" /></a>}
-              {profile.socials.twitter && <a href={profile.socials.twitter} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Twitter" /></a>}
+              {profile.socials.instagram && (() => {
+                let url = profile.socials.instagram.trim();
+                if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                return <a href={url} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Instagram" /></a>;
+              })()}
+              {profile.socials.tiktok && (() => {
+                let url = profile.socials.tiktok.trim();
+                if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                return <a href={url} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="TikTok" /></a>;
+              })()}
+              {profile.socials.facebook && (() => {
+                let url = profile.socials.facebook.trim();
+                if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                return <a href={url} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Facebook" /></a>;
+              })()}
+              {profile.socials.twitter && (() => {
+                let url = profile.socials.twitter.trim();
+                if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                return <a href={url} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Twitter" /></a>;
+              })()}
             </div>
           )}
 

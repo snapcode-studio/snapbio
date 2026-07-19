@@ -261,10 +261,26 @@ export default function Dashboard() {
               {/* Social Icons Row */}
               {(socials.instagram || socials.tiktok || socials.facebook || socials.twitter) && (
                 <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '24px' }}>
-                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
-                  {socials.tiktok && <a href={socials.tiktok} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
-                  {socials.facebook && <a href={socials.facebook} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
-                  {socials.twitter && <a href={socials.twitter} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
+                  {socials.instagram && (() => {
+                    let url = socials.instagram.trim();
+                    if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                    return <a href={url} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>;
+                  })()}
+                  {socials.tiktok && (() => {
+                    let url = socials.tiktok.trim();
+                    if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                    return <a href={url} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>;
+                  })()}
+                  {socials.facebook && (() => {
+                    let url = socials.facebook.trim();
+                    if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                    return <a href={url} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>;
+                  })()}
+                  {socials.twitter && (() => {
+                    let url = socials.twitter.trim();
+                    if (url && !/^https?:\/\//i.test(url) && !/^(mailto|tel|sms):/i.test(url)) url = `https://${url}`;
+                    return <a href={url} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>;
+                  })()}
                 </div>
               )}
 
