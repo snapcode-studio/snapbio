@@ -1,44 +1,166 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { THEMES } from '../components/ThemeEditor';
 
 export default function PublicProfile() {
   const { username } = useParams();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  // Here we would fetch data from Firestore where bioProfile.username === username
+  useEffect(() => {
+    if (!username) { setNotFound(true); setLoading(false); return; }
+    (async () => {
+      try {
+        // Query by slug
+        const q = query(collection(db, 'users'), where('bioProfile.slug', '==', username));
+        const snap = await getDocs(q);
+        if (snap.empty) { setNotFound(true); setLoading(false); return; }
+        const data = snap.docs[0].data();
+        setProfile(data.bioProfile || {});
+      } catch (e) {
+        console.error(e);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [username]);
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#000', color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+      Ładowanie...
+    </div>
+  );
+
+  if (notFound) return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#000', color: 'rgba(255,255,255,0.5)', fontFamily: "'Inter', sans-serif", gap: '12px' }}>
+      <div style={{ fontSize: '48px' }}>404</div>
+      <p>Nie znaleziono profilu <strong style={{ color: 'white' }}>/{username}</strong></p>
+      <a href="https://bio.getsnap.space" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', textDecoration: 'underline', marginTop: '8px' }}>Utwórz swój SnapBio →</a>
+    </div>
+  );
+
+  const themeId = profile.theme || 'dark';
+  const themeData = THEMES.find(t => t.id === themeId) || THEMES[0];
+  const accent = profile.accentColor || themeData.accent;
+  const fontFamily = profile.font || 'Inter';
+  const isLight = themeData.bg > '#888888';
+  const linkTextColor = isLight ? '#111' : themeData.btnText || '#000';
+
+  // Determine if accent is light or dark for button text
+  const hexToRgb = (hex) => {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return { r, g, b };
+  };
+  const luminance = (hex) => {
+    if (!hex || hex.length < 7) return 0;
+    const { r, g, b } = hexToRgb(hex);
+    return 0.299 * r + 0.587 * g + 0.114 * b;
+  };
+  const btnTextColor = luminance(accent) > 140 ? '#000' : '#fff';
+
+  const pageStyle = {
+    background: themeData.bg,
+    minHeight: '100vh',
+    fontFamily: `'${fontFamily}', sans-serif`,
+    color: themeData.text,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '40px 16px 60px',
+  };
+
+  const cardStyle = {
+    width: '100%',
+    maxWidth: '420px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '0',
+  };
 
   return (
     <>
-      <nav>
-        <div className="navbar__bar glass animate-fade-up" style={{ animationDelay: '0.1s' }}>
-          <div className="logo-wrap">
-            <img src="/logo.webp" alt="Logo" className="logo-img" onError={(e) => e.target.style.display='none'} />
-            SnapBio
-          </div>
-        </div>
-      </nav>
+      {/* Inject Google Fonts for chosen font */}
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;600;700&display=swap');`}</style>
 
-      <div className="container hero" style={{ minHeight: '70vh' }}>
-        <div className="card animate-fade-up" style={{ maxWidth: '400px', width: '100%', margin: '0 auto', animationDelay: '0.2s', textAlign: 'center', padding: '40px' }}>
-          <div style={{ width: '96px', height: '96px', margin: '0 auto 1.5rem', background: 'linear-gradient(to top right, #333, #666)', borderRadius: '50%', border: '4px solid #0a0a0c', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}></div>
-          <h1 style={{ fontSize: '24px', letterSpacing: '-0.02em', marginBottom: '8px' }}>{username || "Twoja Nazwa"}</h1>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-            Twój krótki, minimalistyczny opis. Czysta elegancja i zero zbędnych elementów.
-          </p>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-             <a href="#" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
-               Rezerwuj wizytę (Booksy)
-             </a>
-             <a href="#" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
-               Instagram
-             </a>
-             <a href="#" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none' }}>
-               Nasz Cennik
-             </a>
+      <div style={pageStyle}>
+        <div style={cardStyle}>
+          {/* Avatar */}
+          <div style={{
+            width: '88px', height: '88px', borderRadius: '50%',
+            background: profile.avatarUrl ? `url(${profile.avatarUrl}) center/cover no-repeat` : `linear-gradient(135deg, ${accent}55, ${accent}99)`,
+            border: `3px solid ${accent}55`,
+            marginBottom: '14px',
+            flexShrink: 0,
+            boxShadow: `0 8px 32px ${accent}33`,
+          }} />
+
+          {/* Name */}
+          <h1 style={{ fontSize: '22px', fontWeight: 700, margin: '0 0 6px', textAlign: 'center', color: themeData.text }}>
+            {profile.name || username}
+          </h1>
+
+          {/* Bio */}
+          {profile.bio && (
+            <p style={{ fontSize: '14px', color: themeData.text + 'aa', textAlign: 'center', marginBottom: '28px', maxWidth: '320px', lineHeight: 1.5 }}>
+              {profile.bio}
+            </p>
+          )}
+          {!profile.bio && <div style={{ marginBottom: '28px' }} />}
+
+          {/* Links */}
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(profile.links || []).filter(l => l.title && l.url).map((link, i) => (
+              <a
+                key={link.id || i}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '14px 20px',
+                  borderRadius: '14px',
+                  background: accent,
+                  color: btnTextColor,
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  fontSize: '15px',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: `0 4px 16px ${accent}44`,
+                  animationDelay: `${i * 0.07}s`,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
+              >
+                <span style={{ fontSize: '20px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
+                <span style={{ flex: 1, textAlign: 'center' }}>{link.title}</span>
+              </a>
+            ))}
           </div>
-          
-          <div style={{ marginTop: '2.5rem' }}>
-            <a href="/" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none', fontFamily: "'Geist Mono', monospace" }}>
-              SnapBio by Snap Code
+
+          {/* Empty state */}
+          {(!profile.links || profile.links.filter(l => l.title && l.url).length === 0) && (
+            <div style={{ textAlign: 'center', color: themeData.text + '44', fontSize: '14px', padding: '32px' }}>
+              Ten profil nie ma jeszcze żadnych linków.
+            </div>
+          )}
+
+          {/* Footer — Ecosystem branding */}
+          <div style={{ marginTop: '40px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <p style={{ fontSize: '11px', color: themeData.text + '40', lineHeight: 1.6 }}>
+              Bio napędza{' '}
+              <a href="https://bio.getsnap.space" style={{ color: themeData.text + '60', textDecoration: 'underline' }}>SnapBio</a>
+              {' '}od{' '}
+              <a href="https://getsnap.space" style={{ color: themeData.text + '60', textDecoration: 'underline' }}>Snap Code Studio</a>
+            </p>
+            <a href="https://bio.getsnap.space" style={{ fontSize: '10px', color: themeData.text + '30', textDecoration: 'none', fontFamily: "'Geist Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Utwórz swój profil →
             </a>
           </div>
         </div>

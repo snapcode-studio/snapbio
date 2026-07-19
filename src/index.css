@@ -135,8 +135,23 @@ nav { position: sticky; top: 0; z-index: 100; padding: clamp(10px, 2vw, 20px); }
 .menu-item.sortable-ghost { opacity: 0.3; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); }
 .menu-item.sortable-drag { background: rgba(255,255,255,0.1); cursor: grabbing; box-shadow: 0 15px 40px rgba(0,0,0,0.6); transform: scale(1.02); }
 
-.drag-handle { cursor: grab; padding: 0 15px 0 0; color: var(--text-muted); font-size: 1.4rem; transition: color 0.2s; }
+.drag-handle { cursor: grab; padding: 0 10px 0 0; color: var(--text-muted); font-size: 1.2rem; transition: color 0.2s; flex-shrink: 0; }
 .drag-handle:hover { color: var(--text-primary); }
+.drag-handle:active { cursor: grabbing; }
+
+/* Link Editor Items */
+.link-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  transition: all 0.2s;
+}
+.link-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); }
+
 .item-info { flex: 1; padding: 0 15px; overflow: hidden; }
 .item-info h3 { font-size: 18px; margin-bottom: 6px; letter-spacing: -0.01em; word-break: break-word; overflow-wrap: break-word; hyphens: auto; }
 .item-info p { word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; }
