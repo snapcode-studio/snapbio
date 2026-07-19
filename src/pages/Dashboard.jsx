@@ -43,6 +43,8 @@ export default function Dashboard() {
   const [theme, setTheme] = useState('dark');
   const [accentColor, setAccentColor] = useState('#ffffff');
   const [font, setFont] = useState('Inter');
+  const [buttonStyle, setButtonStyle] = useState('pill');
+  const [buttonVariant, setButtonVariant] = useState('filled');
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -86,6 +88,8 @@ export default function Dashboard() {
       setTheme(p.theme || 'dark');
       setAccentColor(p.accentColor || '#ffffff');
       setFont(p.font || 'Inter');
+      setButtonStyle(p.buttonStyle || 'pill');
+      setButtonVariant(p.buttonVariant || 'filled');
       setName(p.name || '');
       setBio(p.bio || '');
       setAvatarUrl(p.avatarUrl || '');
@@ -104,6 +108,8 @@ export default function Dashboard() {
         theme,
         accentColor,
         font,
+        buttonStyle,
+        buttonVariant,
         name,
         bio,
         avatarUrl,
@@ -119,7 +125,7 @@ export default function Dashboard() {
     } finally {
       setSaving(false);
     }
-  }, [user, profile, links, theme, accentColor, font, name, bio, avatarUrl]);
+  }, [user, profile, links, theme, accentColor, font, buttonStyle, buttonVariant, name, bio, avatarUrl, socials]);
 
   const handleSlugSaved = (newSlug) => {
     setProfile(prev => ({ ...prev, slug: newSlug, lastSlugChange: new Date().toISOString() }));
@@ -308,11 +314,16 @@ export default function Dashboard() {
                       </div>
                     );
                   }
+                  const bRadius = buttonStyle === 'sharp' ? '0px' : (buttonStyle === 'rounded' ? '12px' : '999px');
+                  const bBg = buttonVariant === 'outline' ? 'transparent' : accentColor;
+                  const bBorder = buttonVariant === 'outline' ? `2px solid ${accentColor}` : '1px solid rgba(255,255,255,0.05)';
+                  const bColor = buttonVariant === 'outline' ? themeData.text : (themeData.btnText || '#000');
+
                   return (
                     <div key={link.id} style={{
-                      background: accentColor,
-                      color: themeData.btnText || '#000',
-                      borderRadius: '999px', // pill shape
+                      background: bBg,
+                      color: bColor,
+                      borderRadius: bRadius,
                       padding: '14px 20px',
                       fontSize: '14px',
                       fontWeight: 600,
@@ -321,8 +332,8 @@ export default function Dashboard() {
                       justifyContent: 'center',
                       position: 'relative',
                       width: link.halfWidth ? 'calc(50% - 6px)' : '100%',
-                      boxShadow: `0 4px 16px ${accentColor}33`,
-                      border: '1px solid rgba(255,255,255,0.05)',
+                      boxShadow: buttonVariant === 'outline' ? 'none' : `0 4px 16px ${accentColor}33`,
+                      border: bBorder,
                       letterSpacing: '-0.01em'
                     }} className={link.animation ? `anim-${link.animation}` : ''}>
                       <div style={{ position: 'absolute', left: '16px', display: 'flex', alignItems: 'center' }}>
@@ -426,7 +437,13 @@ export default function Dashboard() {
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
                   Podgląd na żywo po lewej stronie.
                 </p>
-                <ThemeEditor theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} font={font} setFont={setFont} />
+                <ThemeEditor 
+                  theme={theme} setTheme={setTheme} 
+                  accentColor={accentColor} setAccentColor={setAccentColor} 
+                  font={font} setFont={setFont} 
+                  buttonStyle={buttonStyle} setButtonStyle={setButtonStyle}
+                  buttonVariant={buttonVariant} setButtonVariant={setButtonVariant}
+                />
               </div>
             )}
 

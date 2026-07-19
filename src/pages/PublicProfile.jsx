@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { THEMES } from '../components/ThemeEditor';
-import { Instagram, Music2, Facebook, Twitter, Share2 } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 
 export default function PublicProfile() {
   const { username } = useParams();
@@ -49,6 +49,8 @@ export default function PublicProfile() {
   const themeData = THEMES.find(t => t.id === themeId) || THEMES[0];
   const accent = profile.accentColor || themeData.accent;
   const fontFamily = profile.font || 'Inter';
+  const buttonStyle = profile.buttonStyle || 'pill';
+  const buttonVariant = profile.buttonVariant || 'filled';
   
   // Determine if accent is light or dark for button text
   const hexToRgb = (hex) => {
@@ -178,10 +180,10 @@ export default function PublicProfile() {
           {/* Social Icons Row */}
           {(profile.socials?.instagram || profile.socials?.tiktok || profile.socials?.facebook || profile.socials?.twitter) && (
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '32px' }}>
-              {profile.socials.instagram && <a href={profile.socials.instagram} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Instagram size={28} /></a>}
-              {profile.socials.tiktok && <a href={profile.socials.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Music2 size={28} /></a>}
-              {profile.socials.facebook && <a href={profile.socials.facebook} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Facebook size={28} /></a>}
-              {profile.socials.twitter && <a href={profile.socials.twitter} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Twitter size={28} /></a>}
+              {profile.socials.instagram && <a href={profile.socials.instagram} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Instagram" /></a>}
+              {profile.socials.tiktok && <a href={profile.socials.tiktok} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="TikTok" /></a>}
+              {profile.socials.facebook && <a href={profile.socials.facebook} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Facebook" /></a>}
+              {profile.socials.twitter && <a href={profile.socials.twitter} target="_blank" rel="noopener noreferrer" style={{ opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" style={{ width: 28, height: 28, borderRadius: 6, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} alt="Twitter" /></a>}
             </div>
           )}
 
@@ -263,6 +265,12 @@ export default function PublicProfile() {
                 finalUrl = `https://${finalUrl}`;
               }
 
+              // Styling logic
+              const bRadius = buttonStyle === 'sharp' ? '0px' : (buttonStyle === 'rounded' ? '14px' : '999px');
+              const bBg = buttonVariant === 'outline' ? 'transparent' : accent;
+              const bBorder = buttonVariant === 'outline' ? `2px solid ${accent}` : `1px solid rgba(255,255,255,0.05)`;
+              const bColor = buttonVariant === 'outline' ? themeData.text : btnTextColor;
+
               return (
                 <a
                   key={link.id || i}
@@ -274,24 +282,36 @@ export default function PublicProfile() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '16px 24px',
-                    borderRadius: '999px', // Pill shape - Linktree style!
-                    background: accent,
-                    color: btnTextColor,
+                    borderRadius: bRadius,
+                    background: bBg,
+                    color: bColor,
                     textDecoration: 'none',
                     fontWeight: 600,
                     fontSize: '15px',
                     letterSpacing: '-0.01em',
                     transition: 'all 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
-                    boxShadow: `0 8px 24px ${accent}33`,
+                    boxShadow: buttonVariant === 'outline' ? 'none' : `0 8px 24px ${accent}33`,
                     animationDelay: `${i * 0.07}s`,
                     width: link.halfWidth ? 'calc(50% - 8px)' : '100%',
                     boxSizing: 'border-box',
                     position: 'relative',
                     overflow: 'hidden',
-                    border: `1px solid rgba(255,255,255,0.05)`
+                    border: bBorder
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)'; e.currentTarget.style.boxShadow = `0 16px 32px ${accent}55`; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}33`; }}
+                  onMouseEnter={e => { 
+                    e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)'; 
+                    e.currentTarget.style.boxShadow = buttonVariant === 'outline' ? `0 8px 24px ${accent}22` : `0 16px 32px ${accent}55`; 
+                    if (buttonVariant === 'outline') {
+                      e.currentTarget.style.background = `${accent}11`;
+                    }
+                  }}
+                  onMouseLeave={e => { 
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                    e.currentTarget.style.boxShadow = buttonVariant === 'outline' ? 'none' : `0 8px 24px ${accent}33`; 
+                    if (buttonVariant === 'outline') {
+                      e.currentTarget.style.background = 'transparent';
+                    }
+                  }}
                   className={`link-button ${link.animation ? `anim-${link.animation}` : ''}`}
                 >
                   <div style={{ position: 'absolute', left: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

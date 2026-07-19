@@ -14,7 +14,7 @@ const FONTS = [
   { id: 'Playfair Display',label: 'Playfair',        sample: 'Aa' },
 ];
 
-export default function ThemeEditor({ theme, setTheme, accentColor, setAccentColor, font, setFont }) {
+export default function ThemeEditor({ theme, setTheme, accentColor, setAccentColor, font, setFont, buttonStyle, setButtonStyle, buttonVariant, setButtonVariant }) {
   const selected = THEMES.find(t => t.id === theme) || THEMES[0];
 
   return (
@@ -58,6 +58,65 @@ export default function ThemeEditor({ theme, setTheme, accentColor, setAccentCol
             style={{ marginBottom: 0, maxWidth: '120px', fontFamily: "'Geist Mono', monospace", fontSize: '14px' }}
           />
           <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>przyciski, ikony</span>
+        </div>
+      </div>
+
+      {/* Button Style */}
+      <div>
+        <span className="input-label">Kształt przycisków</span>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '8px' }}>
+          {[
+            { id: 'pill', label: 'Pigułka', radius: '999px' },
+            { id: 'rounded', label: 'Zaokrąglone', radius: '12px' },
+            { id: 'sharp', label: 'Proste', radius: '0px' }
+          ].map(s => (
+            <button key={s.id} type="button"
+              onClick={() => setButtonStyle && setButtonStyle(s.id)}
+              style={{
+                background: buttonStyle === s.id ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.02)',
+                border: buttonStyle === s.id ? '2px solid #fff' : '2px solid var(--border-light)',
+                borderRadius: '12px',
+                padding: '16px 8px',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                transition: 'all 0.2s',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px'
+              }}>
+              <div style={{ width: '40px', height: '20px', background: accentColor, borderRadius: s.radius }} />
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{s.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Button Variant */}
+      <div>
+        <span className="input-label">Styl przycisków</span>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '8px' }}>
+          {[
+            { id: 'filled', label: 'Wypełnione' },
+            { id: 'outline', label: 'Zarys' }
+          ].map(v => (
+            <button key={v.id} type="button"
+              onClick={() => setButtonVariant && setButtonVariant(v.id)}
+              style={{
+                background: buttonVariant === v.id ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.02)',
+                border: buttonVariant === v.id ? '2px solid #fff' : '2px solid var(--border-light)',
+                borderRadius: '12px',
+                padding: '16px 8px',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                transition: 'all 0.2s',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px'
+              }}>
+              <div style={{ 
+                width: '60px', height: '24px', borderRadius: '8px', 
+                background: v.id === 'filled' ? accentColor : 'transparent',
+                border: v.id === 'outline' ? `2px solid ${accentColor}` : 'none'
+              }} />
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{v.label}</span>
+            </button>
+          ))}
         </div>
       </div>
 
