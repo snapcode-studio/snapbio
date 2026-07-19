@@ -66,11 +66,39 @@ export default function Login() {
       </nav>
       
       <div className="container hero">
-        <div className="hero-content animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          <h1>Link w Bio.<br/>Design klasy<br/>Premium.</h1>
-          <p style={{ fontSize: '1.1rem', marginTop: '1rem', maxWidth: '400px' }}>
-            Zarządzaj swoimi linkami i wizerunkiem w social mediach.
-          </p>
+        <div className="hero-content animate-fade-up" style={{ animationDelay: '0.2s', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div>
+            <h1>Link w Bio.<br/>Design klasy<br/>Premium.</h1>
+            <p style={{ fontSize: '1.1rem', marginTop: '1rem', maxWidth: '400px', color: 'var(--text-secondary)' }}>
+              Zarządzaj swoimi linkami i wizerunkiem w social mediach z jednego miejsca.
+            </p>
+          </div>
+          
+          <div className="hero-graphic glass anim-wiggle" style={{ position: 'relative', width: '100%', maxWidth: '300px', padding: '30px 20px', borderRadius: '32px', display: 'flex', flexDirection: 'column', gap: '16px', border: '1px solid rgba(255,255,255,0.15)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%', background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%)', zIndex: 0 }}></div>
+             
+             <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+               <div style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'linear-gradient(135deg, #a855f7, #ec4899)', border: '2px solid rgba(255,255,255,0.2)' }}></div>
+               <div style={{ width: '120px', height: '14px', borderRadius: '8px', background: 'rgba(255,255,255,0.8)' }}></div>
+               <div style={{ width: '80px', height: '10px', borderRadius: '6px', background: 'rgba(255,255,255,0.4)' }}></div>
+             </div>
+             
+             <div style={{ zIndex: 1, display: 'flex', justifyContent: 'center', gap: '12px', margin: '10px 0' }}>
+               <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }}></div>
+               <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }}></div>
+               <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }}></div>
+             </div>
+
+             <div style={{ zIndex: 1, width: '100%', height: '48px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <div style={{ width: '40%', height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.5)' }}></div>
+             </div>
+             <div style={{ zIndex: 1, width: '100%', height: '48px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <div style={{ width: '50%', height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.5)' }}></div>
+             </div>
+             
+             <div className="anim-pulse" style={{ position: 'absolute', bottom: '-20%', right: '-20%', width: '150px', height: '150px', background: '#ec4899', filter: 'blur(60px)', opacity: 0.3, zIndex: 0 }}></div>
+             <div className="anim-pulse" style={{ position: 'absolute', top: '-10%', left: '-20%', width: '120px', height: '120px', background: '#a855f7', filter: 'blur(50px)', opacity: 0.3, zIndex: 0, animationDelay: '1s' }}></div>
+          </div>
         </div>
 
         <div className="auth-box card animate-fade-up" style={{ animationDelay: '0.3s' }}>
