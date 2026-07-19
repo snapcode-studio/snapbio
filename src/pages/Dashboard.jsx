@@ -154,6 +154,30 @@ export default function Dashboard() {
         throw new Error("Brak zmiennych środowiskowych Cloudinary (VITE_CLOUDINARY_CLOUD_NAME)");
       }
 
+      if (avatarUrl && avatarUrl.includes('cloudinary.com')) {
+        try {
+          const parts = avatarUrl.split('/');
+          const filename = parts[parts.length - 1];
+          const oldPublicId = filename.split('.')[0]; // assuming no folders
+          
+          const dTimestamp = Math.floor(Date.now() / 1000);
+          const dStr = `public_id=${oldPublicId}&timestamp=${dTimestamp}${apiSecret}`;
+          const dEncoder = new TextEncoder();
+          const dData = dEncoder.encode(dStr);
+          const dHashBuffer = await crypto.subtle.digest('SHA-1', dData);
+          const dHashArray = Array.from(new Uint8Array(dHashBuffer));
+          const dSignature = dHashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+          
+          const dFormData = new FormData();
+          dFormData.append('public_id', oldPublicId);
+          dFormData.append('api_key', apiKey);
+          dFormData.append('timestamp', dTimestamp);
+          dFormData.append('signature', dSignature);
+          
+          await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, { method: 'POST', body: dFormData });
+        } catch(e) { console.warn('Failed to delete old avatar', e); }
+      }
+
       const timestamp = Math.floor(Date.now() / 1000);
       
       // Compute signature: sha1 of timestamp=... + apiSecret
@@ -214,7 +238,7 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      <div className="container" style={{ paddingTop: '1rem', paddingBottom: '4rem' }}>
+      <main className="container" style={{ paddingTop: '1rem', paddingBottom: '4rem' }}>
         {/* Dashboard Grid */}
         <div className="dashboard-grid animate-fade-up" style={{ animationDelay: '0.2s', alignItems: 'start' }}>
 
@@ -514,7 +538,7 @@ export default function Dashboard() {
 
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

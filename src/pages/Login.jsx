@@ -65,7 +65,7 @@ export default function Login() {
         </div>
       </nav>
       
-      <div className="container hero">
+      <main className="container hero">
         <div className="hero-content animate-fade-up" style={{ animationDelay: '0.2s', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           <div>
             <h1>Link w Bio.<br/>Design klasy<br/>Premium.</h1>
@@ -142,7 +142,7 @@ export default function Login() {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </>
   );
 }
