@@ -90,22 +90,46 @@ export default function PublicProfile() {
         <div style={cardStyle}>
           {/* Avatar */}
           <div style={{
-            width: '88px', height: '88px', borderRadius: '50%',
+            width: '104px', height: '104px', borderRadius: '50%',
             background: profile.avatarUrl ? `url(${profile.avatarUrl}) center/cover no-repeat` : `linear-gradient(135deg, ${accent}55, ${accent}99)`,
-            border: `3px solid ${accent}55`,
-            marginBottom: '14px',
+            border: `4px solid ${themeData.bg}`, // Use background color to create a cutout effect or use accent
+            marginBottom: '16px',
             flexShrink: 0,
-            boxShadow: `0 8px 32px ${accent}33`,
-          }} />
+            boxShadow: `0 0 0 2px ${accent}44, 0 12px 40px ${accent}33`,
+            transition: 'transform 0.3s ease',
+          }} 
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          />
 
           {/* Name */}
-          <h1 style={{ fontSize: '22px', fontWeight: 700, margin: '0 0 6px', textAlign: 'center', color: themeData.text }}>
+          <h1 style={{ 
+            fontSize: '24px', 
+            fontWeight: 800, 
+            margin: '0 0 8px', 
+            textAlign: 'center', 
+            color: themeData.text,
+            letterSpacing: '-0.02em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
+          }}>
             {profile.name || username}
           </h1>
 
           {/* Bio */}
           {profile.bio && (
-            <div style={{ fontSize: '15px', color: themeData.text, opacity: 0.8, marginBottom: '16px', maxWidth: '400px', textAlign: 'center' }}>
+            <div style={{ 
+              fontSize: '15px', 
+              color: themeData.text, 
+              opacity: 0.85, 
+              marginBottom: '20px', 
+              maxWidth: '400px', 
+              textAlign: 'center',
+              lineHeight: 1.5,
+              fontWeight: 500
+            }}>
               {profile.bio}
             </div>
           )}
@@ -123,18 +147,19 @@ export default function PublicProfile() {
           {!profile.bio && !profile.socials && <div style={{ marginBottom: '28px' }} />}
 
           {/* Links */}
-          <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
+          <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '16px', alignContent: 'flex-start' }}>
             {(profile.links || []).filter(l => l.title).map((link, i) => {
               if (link.type === 'header') {
                 return (
                   <h3 key={link.id || i} style={{
-                    fontSize: '18px',
+                    fontSize: '20px',
                     fontWeight: 700,
                     textAlign: 'center',
-                    marginTop: '24px',
+                    marginTop: '32px',
                     marginBottom: '8px',
                     color: themeData.text,
-                    width: '100%'
+                    width: '100%',
+                    letterSpacing: '-0.02em'
                   }}>
                     {link.title}
                   </h3>
@@ -151,37 +176,39 @@ export default function PublicProfile() {
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      padding: '24px',
-                      borderRadius: '20px',
+                      padding: '28px',
+                      borderRadius: '24px',
                       background: `linear-gradient(135deg, ${accent}E6, ${accent}B3)`,
                       color: btnTextColor,
                       textDecoration: 'none',
                       position: 'relative',
                       overflow: 'hidden',
-                      boxShadow: `0 8px 32px ${accent}66`,
-                      transition: 'transform 0.3s, box-shadow 0.3s',
+                      boxShadow: `0 12px 32px ${accent}44`,
+                      transition: 'all 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
                       animationDelay: `${i * 0.07}s`,
                       marginTop: '8px',
                       marginBottom: '8px',
                       textAlign: 'left',
-                      width: '100%'
+                      width: '100%',
+                      border: `1px solid rgba(255,255,255,0.1)`
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 40px ${accent}88`; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 8px 32px ${accent}66`; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)'; e.currentTarget.style.boxShadow = `0 20px 48px ${accent}66`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = `0 12px 32px ${accent}44`; }}
                     className="animate-fade-up"
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
-                      <span style={{ fontSize: '32px' }}>🍽️</span>
+                      <span style={{ fontSize: '36px', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))' }}>🍽️</span>
                       <span style={{ 
-                        background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', padding: '4px 10px', 
-                        borderRadius: '99px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#fff' 
+                        background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', padding: '6px 14px', 
+                        borderRadius: '99px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#fff',
+                        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2)'
                       }}>
                         Menu Cyfrowe
                       </span>
                     </div>
                     <div>
-                      <h3 style={{ margin: '0 0 6px 0', fontSize: '20px', fontWeight: 800 }}>{link.title || 'Odkryj Nasze Menu'}</h3>
-                      <p style={{ margin: 0, fontSize: '13px', opacity: 0.9, lineHeight: 1.4 }}>Przeglądaj dania, sprawdzaj alergeny i zamawiaj prosto ze swojego telefonu.</p>
+                      <h3 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 800, letterSpacing: '-0.02em' }}>{link.title || 'Odkryj Nasze Menu'}</h3>
+                      <p style={{ margin: 0, fontSize: '14px', opacity: 0.9, lineHeight: 1.5, fontWeight: 500 }}>Przeglądaj dania, sprawdzaj alergeny i zamawiaj prosto ze swojego telefonu.</p>
                     </div>
                   </a>
                 );
@@ -189,8 +216,9 @@ export default function PublicProfile() {
 
               if (!link.url) return null;
 
-              let finalUrl = link.url;
-              if (finalUrl && !finalUrl.match(/^https?:\/\//)) {
+              // Bezpieczne parsowanie URL
+              let finalUrl = (link.url || '').trim();
+              if (finalUrl && !/^https?:\/\//i.test(finalUrl) && !/^(mailto|tel|sms):/i.test(finalUrl)) {
                 finalUrl = `https://${finalUrl}`;
               }
 
@@ -203,30 +231,45 @@ export default function PublicProfile() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: '14px 20px',
-                    borderRadius: '14px',
+                    justifyContent: 'center',
+                    padding: '16px 24px',
+                    borderRadius: '999px', // Pill shape - Linktree style!
                     background: accent,
                     color: btnTextColor,
                     textDecoration: 'none',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     fontSize: '15px',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    boxShadow: `0 4px 16px ${accent}44`,
+                    letterSpacing: '-0.01em',
+                    transition: 'all 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
+                    boxShadow: `0 8px 24px ${accent}33`,
                     animationDelay: `${i * 0.07}s`,
-                    width: link.halfWidth ? 'calc(50% - 6px)' : '100%',
-                    boxSizing: 'border-box'
+                    width: link.halfWidth ? 'calc(50% - 8px)' : '100%',
+                    boxSizing: 'border-box',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    border: `1px solid rgba(255,255,255,0.05)`
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
-                  className={link.animation ? `anim-${link.animation}` : ''}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)'; e.currentTarget.style.boxShadow = `0 16px 32px ${accent}55`; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}33`; }}
+                  className={`link-button ${link.animation ? `anim-${link.animation}` : ''}`}
                 >
-                  {link.icon && link.icon.startsWith('http') ? (
-                    <img src={link.icon} alt="" style={{ width: '20px', height: '20px', borderRadius: '4px', flexShrink: 0 }} />
-                  ) : (
-                    <span style={{ fontSize: '20px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
-                  )}
-                  <span style={{ flex: 1, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{link.title}</span>
+                  <div style={{ position: 'absolute', left: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {link.icon && link.icon.startsWith('http') ? (
+                      <img src={link.icon} alt="" style={{ width: '24px', height: '24px', borderRadius: '6px', objectFit: 'cover' }} />
+                    ) : (
+                      <span style={{ fontSize: '24px' }}>{link.icon || '🌐'}</span>
+                    )}
+                  </div>
+                  <span style={{ 
+                    textAlign: 'center', 
+                    width: '100%', 
+                    padding: '0 40px', // leave room for icon
+                    whiteSpace: 'nowrap', 
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis' 
+                  }}>
+                    {link.title}
+                  </span>
                 </a>
               );
             })}
