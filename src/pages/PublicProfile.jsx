@@ -114,7 +114,7 @@ export default function PublicProfile() {
           {!profile.bio && <div style={{ marginBottom: '28px' }} />}
 
           {/* Links */}
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
             {(profile.links || []).filter(l => l.title).map((link, i) => {
               if (link.type === 'header') {
                 return (
@@ -154,7 +154,8 @@ export default function PublicProfile() {
                       animationDelay: `${i * 0.07}s`,
                       marginTop: '8px',
                       marginBottom: '8px',
-                      textAlign: 'left'
+                      textAlign: 'left',
+                      width: '100%'
                     }}
                     onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 40px ${accent}88`; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 8px 32px ${accent}66`; }}
@@ -199,17 +200,23 @@ export default function PublicProfile() {
                     background: accent,
                     color: btnTextColor,
                     textDecoration: 'none',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontSize: '15px',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     boxShadow: `0 4px 16px ${accent}44`,
                     animationDelay: `${i * 0.07}s`,
+                    width: link.halfWidth ? 'calc(50% - 6px)' : '100%',
+                    boxSizing: 'border-box'
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
                 >
-                  <span style={{ fontSize: '20px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
-                  <span style={{ flex: 1, textAlign: 'center' }}>{link.title}</span>
+                  {link.icon && link.icon.startsWith('http') ? (
+                    <img src={link.icon} alt="" style={{ width: '20px', height: '20px', borderRadius: '4px', flexShrink: 0 }} />
+                  ) : (
+                    <span style={{ fontSize: '20px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
+                  )}
+                  <span style={{ flex: 1, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{link.title}</span>
                 </a>
               );
             })}

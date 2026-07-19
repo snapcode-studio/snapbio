@@ -235,7 +235,7 @@ export default function Dashboard() {
               </div>
 
               {/* Preview Links */}
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start' }}>
                 {links.slice(0, 5).map(link => {
                   if (link.type === 'header') {
                     return (
@@ -247,6 +247,7 @@ export default function Dashboard() {
                         marginTop: '12px',
                         marginBottom: '4px',
                         opacity: link.title ? 1 : 0.3,
+                        width: '100%'
                       }}>
                         {link.title || 'Nagłówek'}
                       </div>
@@ -255,19 +256,25 @@ export default function Dashboard() {
                   if (link.type === 'snapmenu') {
                     return (
                       <div key={link.id} style={{
-                        background: accentColor,
-                        color: themeData.btnText || '#000',
-                        borderRadius: '12px',
-                        padding: '12px',
-                        fontSize: '13px',
-                        fontWeight: 700,
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
+                        flexDirection: 'column',
+                        padding: '16px',
+                        borderRadius: '16px',
+                        background: `linear-gradient(145deg, ${accentColor}dd, ${accentColor}88), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop') center/cover`,
+                        color: themeData.btnText || '#000',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        textAlign: 'left',
+                        width: '100%'
                       }}>
-                        <span style={{ fontSize: '18px' }}>🍽️</span>
-                        <span>{link.title || 'Nasze Menu'}</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                          <span style={{ fontSize: '24px' }}>🍽️</span>
+                          <span style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', padding: '2px 6px', borderRadius: '99px', fontSize: '8px', fontWeight: 700, color: '#fff' }}>MENU CYFROWE</span>
+                        </div>
+                        <div>
+                          <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: 800 }}>{link.title || 'Nasze Menu'}</h3>
+                          <p style={{ margin: 0, fontSize: '10px', opacity: 0.9, lineHeight: 1.3 }}>Przeglądaj dania ze smartfona.</p>
+                        </div>
                       </div>
                     );
                   }
@@ -282,10 +289,14 @@ export default function Dashboard() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      opacity: link.title ? 1 : 0.3,
+                      width: link.halfWidth ? 'calc(50% - 4px)' : '100%'
                     }}>
-                      <span>{link.icon || '🌐'}</span>
-                      <span style={{ flex: 1, textAlign: 'center' }}>{link.title || 'Nowy link'}</span>
+                      {link.icon && link.icon.startsWith('http') ? (
+                        <img src={link.icon} alt="" style={{ width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0 }} />
+                      ) : (
+                        <span style={{ flexShrink: 0 }}>{link.icon || '🌐'}</span>
+                      )}
+                      <span style={{ flex: 1, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{link.title || 'Mój link'}</span>
                     </div>
                   );
                 })}

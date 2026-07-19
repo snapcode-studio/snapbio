@@ -19,16 +19,16 @@ import { CSS } from '@dnd-kit/utilities';
 
 
 const getIconForUrl = (url) => {
-  const u = url.toLowerCase();
-  if (u.includes('youtube.com') || u.includes('youtu.be')) return '▶️';
-  if (u.includes('twitch.tv')) return '🟪';
-  if (u.includes('spotify.com') || u.includes('tiktok.com')) return '🎵';
-  if (u.includes('instagram.com')) return '📸';
-  if (u.includes('facebook.com') || u.includes('fb.com')) return '📘';
-  if (u.includes('twitter.com') || u.includes('x.com')) return '🐦';
-  if (u.includes('linkedin.com')) return '💼';
-  if (u.includes('github.com')) return '💻';
-  return '🌐';
+  try {
+    let u = url;
+    if (!u.startsWith('http://') && !u.startsWith('https://')) {
+      u = 'https://' + u;
+    }
+    const parsed = new URL(u);
+    return `https://www.google.com/s2/favicons?domain=${parsed.hostname}&sz=128`;
+  } catch (e) {
+    return '🌐';
+  }
 };
 
 function SortableLink({ link, onChange, onDelete }) {
@@ -76,10 +76,12 @@ function SortableLink({ link, onChange, onDelete }) {
       ) : (
         // Link Editor
         <>
-          <div style={{ position: 'relative' }}>
-            <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '8px 10px', fontSize: '20px', lineHeight: 1 }}>
-              {link.icon || '🌐'}
-            </div>
+          <div style={{ position: 'relative', width: '40px', height: '40px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderRadius: '8px' }}>
+            {link.icon && link.icon.startsWith('http') ? (
+              <img src={link.icon} alt="" style={{ width: '20px', height: '20px', borderRadius: '4px' }} />
+            ) : (
+              <span style={{ fontSize: '20px' }}>{link.icon || '🌐'}</span>
+            )}
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <input
@@ -100,6 +102,16 @@ function SortableLink({ link, onChange, onDelete }) {
               }}
               style={{ marginBottom: 0, padding: '10px 14px', fontSize: '13px', color: 'var(--text-secondary)' }}
             />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  checked={link.halfWidth || false} 
+                  onChange={e => onChange({ ...link, halfWidth: e.target.checked })} 
+                />
+                Rozmiar: Połowa (Dwa w rzędzie)
+              </label>
+            </div>
           </div>
         </>
       )}
