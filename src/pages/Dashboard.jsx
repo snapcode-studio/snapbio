@@ -213,8 +213,141 @@ export default function Dashboard() {
         {/* Dashboard Grid */}
         <div className="dashboard-grid animate-fade-up" style={{ animationDelay: '0.2s', alignItems: 'start' }}>
 
+          {/* ========== RIGHT: Editor ========== */}
+
+          <div className="editor-section" style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            {/* Tabs */}
+            <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '4px', marginBottom: '16px', border: '1px solid var(--border-light)' }}>
+              {TABS.map(tab => (
+                <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
+                  style={{
+                    flex: 1, padding: '10px', border: 'none', borderRadius: '12px', cursor: 'pointer',
+                    background: activeTab === tab.id ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    fontFamily: 'inherit', fontSize: '14px', fontWeight: activeTab === tab.id ? 600 : 400,
+                    transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                  }}>
+                  <span>{tab.icon}</span> {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab: Links */}
+            {activeTab === 'links' && (
+              <div className="card">
+                <h3 style={{ marginBottom: '4px' }}>Zarządzaj Linkami</h3>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                  Przeciągnij ⠿ aby zmienić kolejność. Kliknij emoji aby zmienić ikonę.
+                </p>
+                <LinkEditor links={links} setLinks={setLinks} hasSnapMenu={hasSnapMenu} />
+              </div>
+            )}
+
+            {/* Tab: Theme */}
+            {activeTab === 'theme' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Profile info below preview */}
+            <div className="card" style={{ marginTop: '1rem', padding: '16px' }}>
+              <span className="input-label">Profil</span>
+              <input type="text" placeholder="Twoja nazwa" value={name} onChange={e => setName(e.target.value)} style={{ marginTop: '8px', marginBottom: '8px' }} />
+              <input type="text" placeholder="Krótki opis (bio)" value={bio} onChange={e => setBio(e.target.value)} style={{ marginBottom: '8px' }} />
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px' }}>Zdjęcie profilowe</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+                    background: avatarUrl ? `url(${avatarUrl}) center/cover no-repeat` : 'rgba(255,255,255,0.1)',
+                    border: '1px solid var(--border-light)'
+                  }} />
+                  <label style={{
+                    cursor: 'pointer', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)',
+                    padding: '10px 16px', borderRadius: '12px', fontSize: '13px', fontWeight: 600, transition: 'background 0.2s'
+                  }}>
+                    {saving ? 'Przesyłanie...' : 'Wgraj zdjęcie'}
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} disabled={saving} />
+                  </label>
+                  {avatarUrl && (
+                    <button type="button" onClick={() => setAvatarUrl('')} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
+                      Usuń
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Social Icons Setup */}
+              <div style={{ marginTop: '20px' }}>
+                <span className="input-label">Social Media (Złote ikony pod opisem)</span>
+                <input type="url" placeholder="Instagram URL" value={socials.instagram} onChange={e => setSocials({ ...socials, instagram: e.target.value })} style={{ marginTop: '8px', marginBottom: '8px' }} />
+                <input type="url" placeholder="TikTok URL" value={socials.tiktok} onChange={e => setSocials({ ...socials, tiktok: e.target.value })} style={{ marginBottom: '8px' }} />
+                <input type="url" placeholder="Facebook URL" value={socials.facebook} onChange={e => setSocials({ ...socials, facebook: e.target.value })} style={{ marginBottom: '8px' }} />
+                <input type="url" placeholder="Twitter (X) URL" value={socials.twitter} onChange={e => setSocials({ ...socials, twitter: e.target.value })} style={{ marginBottom: '0' }} />
+              </div>
+            </div>
+
+              <div className="card">
+                <h3 style={{ marginBottom: '4px' }}>Wygląd Profilu</h3>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                  Podgląd na żywo po lewej stronie.
+                </p>
+                <ThemeEditor 
+                  theme={theme} setTheme={setTheme} 
+                  accentColor={accentColor} setAccentColor={setAccentColor} 
+                  font={font} setFont={setFont} 
+                  buttonStyle={buttonStyle} setButtonStyle={setButtonStyle}
+                  buttonVariant={buttonVariant} setButtonVariant={setButtonVariant}
+                />
+              </div>
+              </div>
+            )}
+
+            {/* Tab: Settings */}
+            {activeTab === 'settings' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {/* Slug */}
+                <div className="card">
+                  <h3 style={{ marginBottom: '4px' }}>Własny Link</h3>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                    Dostosuj adres URL swojego profilu.
+                  </p>
+                  <SlugEditor
+                    uid={user?.uid}
+                    currentSlug={profile.slug}
+                    lastSlugChange={profile.lastSlugChange}
+                    onSaved={handleSlugSaved}
+                  />
+                </div>
+
+                {/* QR Code */}
+                {publicUrl && (
+                  <div className="card" style={{ textAlign: 'center' }}>
+                    <h3 style={{ marginBottom: '4px' }}>Kod QR</h3>
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                      Udostępnij swój profil offline — wydrukuj lub pokaż na ekranie.
+                    </p>
+                    <QrWidget url={publicUrl} />
+                  </div>
+                )}
+
+                {/* Ecosystem */}
+                <div className="card">
+                  <h3 style={{ marginBottom: '1rem' }}>Ekosystem Snap Code</h3>
+                  <EcosystemWidget hasSnapMenu={hasSnapMenu} snapMenuSlug={snapMenuSlug} />
+                </div>
+              </div>
+            )}
+
+            {/* Save Button */}
+            <div style={{ marginTop: '16px' }}>
+              <button onClick={save} disabled={saving} className="btn btn-primary"
+                style={{ fontSize: '15px', padding: '16px' }}>
+                {saving ? 'Zapisywanie...' : saved ? '✓ Zapisano!' : 'Zapisz zmiany'}
+              </button>
+            </div>
+          </div>
+        </div>
+
           {/* ========== LEFT: Preview ========== */}
-          <div style={{ position: 'sticky', top: '100px' }}>
+          <div className="preview-section" style={{ position: 'sticky', top: '100px' }}>
             <div style={{ marginBottom: '1rem' }}>
               <span className="input-label">Podgląd na żywo</span>
             </div>
@@ -384,137 +517,9 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Profile info below preview */}
-            <div className="card" style={{ marginTop: '1rem', padding: '16px' }}>
-              <span className="input-label">Profil</span>
-              <input type="text" placeholder="Twoja nazwa" value={name} onChange={e => setName(e.target.value)} style={{ marginTop: '8px', marginBottom: '8px' }} />
-              <input type="text" placeholder="Krótki opis (bio)" value={bio} onChange={e => setBio(e.target.value)} style={{ marginBottom: '8px' }} />
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px' }}>Zdjęcie profilowe</label>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{
-                    width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
-                    background: avatarUrl ? `url(${avatarUrl}) center/cover no-repeat` : 'rgba(255,255,255,0.1)',
-                    border: '1px solid var(--border-light)'
-                  }} />
-                  <label style={{
-                    cursor: 'pointer', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)',
-                    padding: '10px 16px', borderRadius: '12px', fontSize: '13px', fontWeight: 600, transition: 'background 0.2s'
-                  }}>
-                    {saving ? 'Przesyłanie...' : 'Wgraj zdjęcie'}
-                    <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} disabled={saving} />
-                  </label>
-                  {avatarUrl && (
-                    <button type="button" onClick={() => setAvatarUrl('')} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
-                      Usuń
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Social Icons Setup */}
-              <div style={{ marginTop: '20px' }}>
-                <span className="input-label">Social Media (Złote ikony pod opisem)</span>
-                <input type="url" placeholder="Instagram URL" value={socials.instagram} onChange={e => setSocials({ ...socials, instagram: e.target.value })} style={{ marginTop: '8px', marginBottom: '8px' }} />
-                <input type="url" placeholder="TikTok URL" value={socials.tiktok} onChange={e => setSocials({ ...socials, tiktok: e.target.value })} style={{ marginBottom: '8px' }} />
-                <input type="url" placeholder="Facebook URL" value={socials.facebook} onChange={e => setSocials({ ...socials, facebook: e.target.value })} style={{ marginBottom: '8px' }} />
-                <input type="url" placeholder="Twitter (X) URL" value={socials.twitter} onChange={e => setSocials({ ...socials, twitter: e.target.value })} style={{ marginBottom: '0' }} />
-              </div>
-            </div>
           </div>
 
-          {/* ========== RIGHT: Editor ========== */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {/* Tabs */}
-            <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '4px', marginBottom: '16px', border: '1px solid var(--border-light)' }}>
-              {TABS.map(tab => (
-                <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    flex: 1, padding: '10px', border: 'none', borderRadius: '12px', cursor: 'pointer',
-                    background: activeTab === tab.id ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    fontFamily: 'inherit', fontSize: '14px', fontWeight: activeTab === tab.id ? 600 : 400,
-                    transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
-                  }}>
-                  <span>{tab.icon}</span> {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab: Links */}
-            {activeTab === 'links' && (
-              <div className="card">
-                <h3 style={{ marginBottom: '4px' }}>Zarządzaj Linkami</h3>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                  Przeciągnij ⠿ aby zmienić kolejność. Kliknij emoji aby zmienić ikonę.
-                </p>
-                <LinkEditor links={links} setLinks={setLinks} hasSnapMenu={hasSnapMenu} />
-              </div>
-            )}
-
-            {/* Tab: Theme */}
-            {activeTab === 'theme' && (
-              <div className="card">
-                <h3 style={{ marginBottom: '4px' }}>Wygląd Profilu</h3>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                  Podgląd na żywo po lewej stronie.
-                </p>
-                <ThemeEditor 
-                  theme={theme} setTheme={setTheme} 
-                  accentColor={accentColor} setAccentColor={setAccentColor} 
-                  font={font} setFont={setFont} 
-                  buttonStyle={buttonStyle} setButtonStyle={setButtonStyle}
-                  buttonVariant={buttonVariant} setButtonVariant={setButtonVariant}
-                />
-              </div>
-            )}
-
-            {/* Tab: Settings */}
-            {activeTab === 'settings' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {/* Slug */}
-                <div className="card">
-                  <h3 style={{ marginBottom: '4px' }}>Własny Link</h3>
-                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                    Dostosuj adres URL swojego profilu.
-                  </p>
-                  <SlugEditor
-                    uid={user?.uid}
-                    currentSlug={profile.slug}
-                    lastSlugChange={profile.lastSlugChange}
-                    onSaved={handleSlugSaved}
-                  />
                 </div>
-
-                {/* QR Code */}
-                {publicUrl && (
-                  <div className="card" style={{ textAlign: 'center' }}>
-                    <h3 style={{ marginBottom: '4px' }}>Kod QR</h3>
-                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                      Udostępnij swój profil offline — wydrukuj lub pokaż na ekranie.
-                    </p>
-                    <QrWidget url={publicUrl} />
-                  </div>
-                )}
-
-                {/* Ecosystem */}
-                <div className="card">
-                  <h3 style={{ marginBottom: '1rem' }}>Ekosystem Snap Code</h3>
-                  <EcosystemWidget hasSnapMenu={hasSnapMenu} snapMenuSlug={snapMenuSlug} />
-                </div>
-              </div>
-            )}
-
-            {/* Save Button */}
-            <div style={{ marginTop: '16px' }}>
-              <button onClick={save} disabled={saving} className="btn btn-primary"
-                style={{ fontSize: '15px', padding: '16px' }}>
-                {saving ? 'Zapisywanie...' : saved ? '✓ Zapisano!' : 'Zapisz zmiany'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

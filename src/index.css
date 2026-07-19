@@ -98,7 +98,7 @@ nav { position: sticky; top: 0; z-index: 100; padding: clamp(10px, 2vw, 20px); }
 
 .dashboard-grid { 
   display: grid; 
-  grid-template-columns: minmax(320px, 400px) 1fr; 
+  grid-template-columns: 1fr minmax(320px, 400px); 
   gap: clamp(1.5rem, 3vw, 3rem); 
   margin-top: 2rem; 
   align-items: start;
@@ -107,8 +107,8 @@ nav { position: sticky; top: 0; z-index: 100; padding: clamp(10px, 2vw, 20px); }
 /* Tablet & Mobile Layout adjustments */
 @media (max-width: 1024px) { 
   .dashboard-grid { grid-template-columns: 1fr; } 
-  .sidebar.card { order: 2; }
-  .main-content.card { order: 1; }
+  .preview-section { order: 2; }
+  .editor-section { order: 1; }
 }
 
 @media (max-width: 600px) {
