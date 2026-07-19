@@ -136,9 +136,9 @@ export default function Dashboard() {
     try {
       setSaving(true);
       
-      const cloudName = 'bd6mwr6j';
-      const apiKey = '766971419884991';
-      const apiSecret = 'GNEP87MZhRX77G9oe8LmSDVqo-o';
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+      const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
       const timestamp = Math.floor(Date.now() / 1000);
       
       // Compute signature: sha1 of timestamp=... + apiSecret
