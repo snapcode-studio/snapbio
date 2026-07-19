@@ -214,54 +214,69 @@ export default function Dashboard() {
             </div>
             <div style={{
               background: themeData.bg,
-              borderRadius: '32px',
-              padding: '24px',
-              minHeight: '480px',
-              border: '1px solid var(--border-light)',
+              borderRadius: '40px', // More modern phone frame
+              padding: '24px 20px',
+              minHeight: '600px',
+              border: '8px solid var(--bg-deep)', // Thicker border for phone look
+              outline: '1px solid var(--border-light)',
               fontFamily: `'${font}', sans-serif`,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               transition: 'background 0.4s ease',
+              position: 'relative'
             }}>
+              
+              {/* Fake Share Button in Preview */}
+              <div style={{
+                position: 'absolute', top: '24px', right: '20px',
+                width: '32px', height: '32px', borderRadius: '50%',
+                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.05)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: themeData.text
+              }}>
+                <span style={{ fontSize: '14px' }}>↗</span>
+              </div>
+
               {/* Avatar */}
               <div style={{
-                width: '72px', height: '72px', borderRadius: '50%',
+                width: '88px', height: '88px', borderRadius: '50%', // slightly smaller than real for preview
                 background: avatarUrl ? `url(${avatarUrl}) center/cover` : `linear-gradient(135deg, ${accentColor}44, ${accentColor}88)`,
-                border: `3px solid ${accentColor}44`,
-                marginBottom: '12px', flexShrink: 0,
+                border: `3px solid ${themeData.bg}`,
+                boxShadow: `0 0 0 2px ${accentColor}44, 0 8px 24px ${accentColor}33`,
+                marginBottom: '14px', flexShrink: 0,
               }} />
-              <div style={{ fontWeight: 700, fontSize: '18px', color: themeData.text, marginBottom: '4px', textAlign: 'center' }}>
+              <div style={{ fontWeight: 800, fontSize: '20px', color: themeData.text, marginBottom: '6px', textAlign: 'center', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 {name || user?.email?.split('@')[0]}
               </div>
-              <div style={{ fontSize: '12px', color: themeData.text + '88', marginBottom: '16px', textAlign: 'center', maxWidth: '200px' }}>
-                {bio || 'Twój opis...'}
+              <div style={{ fontSize: '13px', color: themeData.text, opacity: 0.85, marginBottom: '16px', textAlign: 'center', maxWidth: '200px', lineHeight: 1.4 }}>
+                {bio || 'Twój krótki opis...'}
               </div>
 
               {/* Social Icons Row */}
               {(socials.instagram || socials.tiktok || socials.facebook || socials.twitter) && (
                 <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '24px' }}>
-                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
-                  {socials.tiktok && <a href={socials.tiktok} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
-                  {socials.facebook && <a href={socials.facebook} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
-                  {socials.twitter && <a href={socials.twitter} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
+                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
+                  {socials.tiktok && <a href={socials.tiktok} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
+                  {socials.facebook && <a href={socials.facebook} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
+                  {socials.twitter && <a href={socials.twitter} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4, filter: themeData.id === 'light' ? 'invert(1)' : 'none' }} /></a>}
                 </div>
               )}
 
               {/* Preview Links */}
-              <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start' }}>
-                {links.slice(0, 5).map(link => {
+              <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
+                {links.slice(0, 5).map((link, i) => {
                   if (link.type === 'header') {
                     return (
                       <div key={link.id} style={{
                         color: themeData.text,
-                        fontSize: '15px',
+                        fontSize: '16px',
                         fontWeight: 700,
                         textAlign: 'center',
-                        marginTop: '12px',
+                        marginTop: '16px',
                         marginBottom: '4px',
                         opacity: link.title ? 1 : 0.3,
-                        width: '100%'
+                        width: '100%',
+                        letterSpacing: '-0.02em'
                       }}>
                         {link.title || 'Nagłówek'}
                       </div>
@@ -273,21 +288,22 @@ export default function Dashboard() {
                         display: 'flex',
                         flexDirection: 'column',
                         padding: '16px',
-                        borderRadius: '16px',
+                        borderRadius: '20px',
                         background: `linear-gradient(135deg, ${accentColor}E6, ${accentColor}B3)`,
                         color: themeData.btnText || '#000',
                         position: 'relative',
                         overflow: 'hidden',
                         textAlign: 'left',
-                        width: '100%'
+                        width: '100%',
+                        border: '1px solid rgba(255,255,255,0.1)'
                       }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                          <span style={{ fontSize: '24px' }}>🍽️</span>
-                          <span style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', padding: '2px 6px', borderRadius: '99px', fontSize: '8px', fontWeight: 700, color: '#fff' }}>MENU CYFROWE</span>
+                          <span style={{ fontSize: '24px', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' }}>🍽️</span>
+                          <span style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', padding: '4px 8px', borderRadius: '99px', fontSize: '9px', fontWeight: 700, color: '#fff', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2)' }}>MENU CYFROWE</span>
                         </div>
                         <div>
-                          <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: 800 }}>{link.title || 'Nasze Menu'}</h3>
-                          <p style={{ margin: 0, fontSize: '10px', opacity: 0.9, lineHeight: 1.3 }}>Przeglądaj dania ze smartfona.</p>
+                          <h3 style={{ margin: '0 0 6px 0', fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em' }}>{link.title || 'Nasze Menu'}</h3>
+                          <p style={{ margin: 0, fontSize: '12px', opacity: 0.9, lineHeight: 1.4, fontWeight: 500 }}>Przeglądaj dania ze smartfona.</p>
                         </div>
                       </div>
                     );
@@ -296,33 +312,41 @@ export default function Dashboard() {
                     <div key={link.id} style={{
                       background: accentColor,
                       color: themeData.btnText || '#000',
-                      borderRadius: '12px',
-                      padding: '10px 14px',
-                      fontSize: '13px',
+                      borderRadius: '999px', // pill shape
+                      padding: '14px 20px',
+                      fontSize: '14px',
                       fontWeight: 600,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      width: link.halfWidth ? 'calc(50% - 4px)' : '100%'
+                      justifyContent: 'center',
+                      position: 'relative',
+                      width: link.halfWidth ? 'calc(50% - 6px)' : '100%',
+                      boxShadow: `0 4px 16px ${accentColor}33`,
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      letterSpacing: '-0.01em'
                     }} className={link.animation ? `anim-${link.animation}` : ''}>
-                      {link.icon && link.icon.startsWith('http') ? (
-                        <img src={link.icon} alt="" style={{ width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0 }} />
-                      ) : (
-                        <span style={{ flexShrink: 0 }}>{link.icon || '🌐'}</span>
-                      )}
-                      <span style={{ flex: 1, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{link.title || 'Mój link'}</span>
+                      <div style={{ position: 'absolute', left: '16px', display: 'flex', alignItems: 'center' }}>
+                        {link.icon && link.icon.startsWith('http') ? (
+                          <img src={link.icon} alt="" style={{ width: '18px', height: '18px', borderRadius: '4px', flexShrink: 0 }} />
+                        ) : (
+                          <span style={{ fontSize: '18px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
+                        )}
+                      </div>
+                      <span style={{ textAlign: 'center', width: '100%', padding: '0 24px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {link.title || 'Mój link'}
+                      </span>
                     </div>
                   );
                 })}
                 {links.length === 0 && (
-                  <div style={{ textAlign: 'center', color: themeData.text + '44', fontSize: '12px', padding: '20px' }}>
+                  <div style={{ textAlign: 'center', color: themeData.text + '44', fontSize: '12px', padding: '20px', width: '100%' }}>
                     Dodaj linki →
                   </div>
                 )}
               </div>
 
               {/* Preview Footer */}
-              <div style={{ marginTop: 'auto', paddingTop: '20px', textAlign: 'center', fontSize: '10px', color: themeData.text + '40' }}>
+              <div style={{ marginTop: 'auto', paddingTop: '32px', textAlign: 'center', fontSize: '11px', color: themeData.text + '40', fontWeight: 500 }}>
                 SnapBio • Snap Code Studio
               </div>
             </div>

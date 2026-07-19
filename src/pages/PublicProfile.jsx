@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { THEMES } from '../components/ThemeEditor';
+import { Instagram, Music2, Facebook, Twitter, Share2 } from 'lucide-react';
 
 export default function PublicProfile() {
   const { username } = useParams();
@@ -81,13 +82,53 @@ export default function PublicProfile() {
     gap: '0',
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `${profile.name || username} on SnapBio`,
+        url: window.location.href
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Skopiowano link do schowka!');
+    }
+  };
+
   return (
     <>
       {/* Inject Google Fonts for chosen font */}
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;600;700&display=swap');`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;600;700;800&display=swap');`}</style>
 
       <div style={pageStyle}>
-        <div style={cardStyle}>
+        <div style={{ ...cardStyle, position: 'relative' }}>
+          {/* Share Button */}
+          <button 
+            onClick={handleShare}
+            style={{
+              position: 'absolute',
+              top: '0px',
+              right: '0px',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.05)',
+              color: themeData.text,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              backdropFilter: 'blur(10px)',
+              zIndex: 10
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'scale(1)'; }}
+            title="Udostępnij profil"
+          >
+            <Share2 size={18} />
+          </button>
+
           {/* Avatar */}
           <div style={{
             width: '104px', height: '104px', borderRadius: '50%',
