@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
 import { doc, getDoc, updateDoc, setDoc, collection, getDocs, limit, query } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LinkEditor from '../components/LinkEditor';
 import ThemeEditor, { THEMES } from '../components/ThemeEditor';
@@ -145,42 +145,48 @@ export default function Dashboard() {
     if (!file || !user) return;
     try {
       setSaving(true);
+      
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+      const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
 
-      // Usunięcie starego avatara ze storage jeśli istnieje
-      if (avatarUrl && avatarUrl.includes('firebasestorage.googleapis.com')) {
-        try {
-          const oldRef = ref(storage, avatarUrl);
-          await deleteObject(oldRef);
-        } catch (err) {
-          console.warn('Nie udało się usunąć starego avatara:', err);
-        }
+      if (!cloudName) {
+        throw new Error("Brak zmiennych środowiskowych Cloudinary (VITE_CLOUDINARY_CLOUD_NAME)");
       }
 
-      const storageRef = ref(storage, `avatars/${user.uid}_${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      setAvatarUrl(url);
+      const timestamp = Math.floor(Date.now() / 1000);
+      
+      // Compute signature: sha1 of timestamp=... + apiSecret
+      const str = `timestamp=${timestamp}${apiSecret}`;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', apiKey);
+      formData.append('timestamp', timestamp);
+      formData.append('signature', signature);
+      
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await res.json();
+      if (result.secure_url) {
+        setAvatarUrl(result.secure_url);
+      } else {
+        throw new Error(result.error?.message || 'Błąd uploadu Cloudinary');
+      }
     } catch (err) {
       console.error(err);
       alert('Błąd podczas przesyłania zdjęcia: ' + err.message);
     } finally {
       setSaving(false);
     }
-  };
-
-  const handleAvatarRemove = async () => {
-    if (avatarUrl && avatarUrl.includes('firebasestorage.googleapis.com')) {
-      try {
-        setSaving(true);
-        const oldRef = ref(storage, avatarUrl);
-        await deleteObject(oldRef);
-      } catch (err) {
-        console.warn('Nie udało się usunąć starego avatara:', err);
-      } finally {
-        setSaving(false);
-      }
-    }
-    setAvatarUrl('');
   };
 
   return (
@@ -266,7 +272,7 @@ export default function Dashboard() {
                     <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} disabled={saving} />
                   </label>
                   {avatarUrl && (
-                    <button type="button" onClick={handleAvatarRemove} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
+                    <button type="button" onClick={() => setAvatarUrl('')} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
                       Usuń
                     </button>
                   )}
