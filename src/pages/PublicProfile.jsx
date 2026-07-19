@@ -141,24 +141,38 @@ export default function PublicProfile() {
                     rel="noopener noreferrer"
                     style={{
                       display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '14px 20px',
-                      borderRadius: '14px',
-                      background: accent,
+                      flexDirection: 'column',
+                      padding: '24px',
+                      borderRadius: '20px',
+                      background: `linear-gradient(145deg, ${accent}dd, ${accent}88), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop') center/cover`,
                       color: btnTextColor,
                       textDecoration: 'none',
-                      fontWeight: 700,
-                      fontSize: '15px',
-                      transition: 'transform 0.2s, box-shadow 0.2s',
-                      boxShadow: `0 4px 16px ${accent}44`,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      boxShadow: `0 8px 32px ${accent}66`,
+                      transition: 'transform 0.3s, box-shadow 0.3s',
                       animationDelay: `${i * 0.07}s`,
+                      marginTop: '8px',
+                      marginBottom: '8px',
+                      textAlign: 'left'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 40px ${accent}88`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 8px 32px ${accent}66`; }}
+                    className="animate-fade-up"
                   >
-                    <span style={{ fontSize: '20px', flexShrink: 0 }}>🍽️</span>
-                    <span style={{ flex: 1, textAlign: 'center' }}>{link.title || 'Nasze Menu'}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                      <span style={{ fontSize: '32px' }}>🍽️</span>
+                      <span style={{ 
+                        background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', padding: '4px 10px', 
+                        borderRadius: '99px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#fff' 
+                      }}>
+                        Menu Cyfrowe
+                      </span>
+                    </div>
+                    <div>
+                      <h3 style={{ margin: '0 0 6px 0', fontSize: '20px', fontWeight: 800 }}>{link.title || 'Odkryj Nasze Menu'}</h3>
+                      <p style={{ margin: 0, fontSize: '13px', opacity: 0.9, lineHeight: 1.4 }}>Przeglądaj dania, sprawdzaj alergeny i zamawiaj prosto ze swojego telefonu.</p>
+                    </div>
                   </a>
                 );
               }

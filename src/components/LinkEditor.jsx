@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-const ICON_OPTIONS = ['🌐', '▶️', '🟪', '🎵', '📸', '📘', '🐦', '💼', '💻', '📞', '📧', '🛒', '📍', '🎥', '📅', '⭐', '💬'];
+
 
 const getIconForUrl = (url) => {
   const u = url.toLowerCase();
@@ -38,7 +38,6 @@ function SortableLink({ link, onChange, onDelete }) {
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
-  const [showIcons, setShowIcons] = useState(false);
 
   const isHeader = link.type === 'header';
   const isSnapMenu = link.type === 'snapmenu';
@@ -78,23 +77,9 @@ function SortableLink({ link, onChange, onDelete }) {
         // Link Editor
         <>
           <div style={{ position: 'relative' }}>
-            <button
-              type="button"
-              onClick={() => setShowIcons(!showIcons)}
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '8px 10px', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}
-            >
+            <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '8px 10px', fontSize: '20px', lineHeight: 1 }}>
               {link.icon || '🌐'}
-            </button>
-            {showIcons && (
-              <div style={{ position: 'absolute', top: '110%', left: 0, zIndex: 50, background: '#1a1a1c', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '8px', display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '4px', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}>
-                {ICON_OPTIONS.map(ic => (
-                  <button key={ic} type="button" onClick={() => { onChange({ ...link, icon: ic, manualIcon: true }); setShowIcons(false); }}
-                    style={{ background: link.icon === ic ? 'rgba(255,255,255,0.15)' : 'transparent', border: 'none', borderRadius: '8px', padding: '6px', cursor: 'pointer', fontSize: '18px' }}>
-                    {ic}
-                  </button>
-                ))}
-              </div>
-            )}
+            </div>
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <input
@@ -110,7 +95,7 @@ function SortableLink({ link, onChange, onDelete }) {
               value={link.url}
               onChange={e => {
                 const newUrl = e.target.value;
-                const newIcon = !link.manualIcon ? getIconForUrl(newUrl) : link.icon;
+                const newIcon = getIconForUrl(newUrl);
                 onChange({ ...link, url: newUrl, icon: newIcon });
               }}
               style={{ marginBottom: 0, padding: '10px 14px', fontSize: '13px', color: 'var(--text-secondary)' }}
@@ -137,7 +122,7 @@ export default function LinkEditor({ links, setLinks, hasSnapMenu }) {
 
   const addLink = () => {
     const id = Math.random().toString(36).slice(2, 9);
-    setLinks([...links, { id, type: 'link', title: '', url: '', icon: '🌐', manualIcon: false }]);
+    setLinks([...links, { id, type: 'link', title: '', url: '', icon: '🌐' }]);
   };
 
   const addHeader = () => {
