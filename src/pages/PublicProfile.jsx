@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { THEMES } from '../components/ThemeEditor';
-import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 
 export default function PublicProfile() {
   const { username } = useParams();

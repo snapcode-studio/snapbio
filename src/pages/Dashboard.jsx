@@ -6,7 +6,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LinkEditor from '../components/LinkEditor';
 import ThemeEditor, { THEMES } from '../components/ThemeEditor';
-import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react'; // For Socials
 import SlugEditor from '../components/SlugEditor';
 import QrWidget from '../components/QrWidget';
 import EcosystemWidget from '../components/EcosystemWidget';
@@ -242,10 +241,10 @@ export default function Dashboard() {
               {/* Social Icons Row */}
               {(socials.instagram || socials.tiktok || socials.facebook || socials.twitter) && (
                 <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '24px' }}>
-                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Instagram size={20} /></a>}
-                  {socials.tiktok && <a href={socials.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Music2 size={20} /></a>}
-                  {socials.facebook && <a href={socials.facebook} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Facebook size={20} /></a>}
-                  {socials.twitter && <a href={socials.twitter} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Twitter size={20} /></a>}
+                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=instagram.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
+                  {socials.tiktok && <a href={socials.tiktok} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
+                  {socials.facebook && <a href={socials.facebook} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=facebook.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
+                  {socials.twitter && <a href={socials.twitter} target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=128" alt="" style={{ width: 20, height: 20, borderRadius: 4 }} /></a>}
                 </div>
               )}
 
