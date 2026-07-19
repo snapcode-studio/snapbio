@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
 import { doc, getDoc, updateDoc, setDoc, collection, getDocs, limit, query } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LinkEditor from '../components/LinkEditor';
 import ThemeEditor, { THEMES } from '../components/ThemeEditor';
@@ -145,6 +145,17 @@ export default function Dashboard() {
     if (!file || !user) return;
     try {
       setSaving(true);
+
+      // Usunięcie starego avatara ze storage jeśli istnieje
+      if (avatarUrl && avatarUrl.includes('firebasestorage.googleapis.com')) {
+        try {
+          const oldRef = ref(storage, avatarUrl);
+          await deleteObject(oldRef);
+        } catch (err) {
+          console.warn('Nie udało się usunąć starego avatara:', err);
+        }
+      }
+
       const storageRef = ref(storage, `avatars/${user.uid}_${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
@@ -155,6 +166,21 @@ export default function Dashboard() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (avatarUrl && avatarUrl.includes('firebasestorage.googleapis.com')) {
+      try {
+        setSaving(true);
+        const oldRef = ref(storage, avatarUrl);
+        await deleteObject(oldRef);
+      } catch (err) {
+        console.warn('Nie udało się usunąć starego avatara:', err);
+      } finally {
+        setSaving(false);
+      }
+    }
+    setAvatarUrl('');
   };
 
   return (
@@ -240,7 +266,7 @@ export default function Dashboard() {
                     <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} disabled={saving} />
                   </label>
                   {avatarUrl && (
-                    <button type="button" onClick={() => setAvatarUrl('')} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
+                    <button type="button" onClick={handleAvatarRemove} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
                       Usuń
                     </button>
                   )}
