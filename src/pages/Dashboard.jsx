@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc, collection, getDocs, limit, query } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LinkEditor from '../components/LinkEditor';
 import ThemeEditor, { THEMES } from '../components/ThemeEditor';
@@ -59,11 +59,15 @@ export default function Dashboard() {
         const data = snap.data();
         p = { ...DEFAULT_PROFILE, ...(data.bioProfile || {}) };
 
-        // Check SnapMenu connection
-        if (data.restaurantName || data.menuActive || data.snapmenu) {
-          setHasSnapMenu(true);
-          setSnapMenuSlug(data.snapMenuUid || currentUser.uid);
-        }
+        // Check SnapMenu connection - query menuItems subcollection
+        try {
+          const menuQ = query(collection(db, 'users', currentUser.uid, 'menuItems'), limit(1));
+          const menuSnap = await getDocs(menuQ);
+          if (!menuSnap.empty) {
+            setHasSnapMenu(true);
+            setSnapMenuSlug(currentUser.uid);
+          }
+        } catch {}
       } else {
         // Create initial user doc
         await setDoc(userRef, {
@@ -187,23 +191,40 @@ export default function Dashboard() {
 
               {/* Preview Links */}
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {links.slice(0, 5).map(link => (
-                  <div key={link.id} style={{
-                    background: accentColor,
-                    color: themeData.btnText || '#000',
-                    borderRadius: '12px',
-                    padding: '10px 14px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    opacity: link.title ? 1 : 0.3,
-                  }}>
-                    <span>{link.icon || '🌐'}</span>
-                    <span style={{ flex: 1, textAlign: 'center' }}>{link.title || 'Nowy link'}</span>
-                  </div>
-                ))}
+                {links.slice(0, 5).map(link => {
+                  if (link.type === 'header') {
+                    return (
+                      <div key={link.id} style={{
+                        color: themeData.text,
+                        fontSize: '15px',
+                        fontWeight: 700,
+                        textAlign: 'center',
+                        marginTop: '12px',
+                        marginBottom: '4px',
+                        opacity: link.title ? 1 : 0.3,
+                      }}>
+                        {link.title || 'Nagłówek'}
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={link.id} style={{
+                      background: accentColor,
+                      color: themeData.btnText || '#000',
+                      borderRadius: '12px',
+                      padding: '10px 14px',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      opacity: link.title ? 1 : 0.3,
+                    }}>
+                      <span>{link.icon || '🌐'}</span>
+                      <span style={{ flex: 1, textAlign: 'center' }}>{link.title || 'Nowy link'}</span>
+                    </div>
+                  );
+                })}
                 {links.length === 0 && (
                   <div style={{ textAlign: 'center', color: themeData.text + '44', fontSize: '12px', padding: '20px' }}>
                     Dodaj linki →

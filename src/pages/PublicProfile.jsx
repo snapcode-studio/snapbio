@@ -114,34 +114,54 @@ export default function PublicProfile() {
 
           {/* Links */}
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {(profile.links || []).filter(l => l.title && l.url).map((link, i) => (
-              <a
-                key={link.id || i}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '14px 20px',
-                  borderRadius: '14px',
-                  background: accent,
-                  color: btnTextColor,
-                  textDecoration: 'none',
-                  fontWeight: 600,
-                  fontSize: '15px',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  boxShadow: `0 4px 16px ${accent}44`,
-                  animationDelay: `${i * 0.07}s`,
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
-              >
-                <span style={{ fontSize: '20px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
-                <span style={{ flex: 1, textAlign: 'center' }}>{link.title}</span>
-              </a>
-            ))}
+            {(profile.links || []).filter(l => l.title).map((link, i) => {
+              if (link.type === 'header') {
+                return (
+                  <h3 key={link.id || i} style={{
+                    fontSize: '18px',
+                    fontWeight: 700,
+                    textAlign: 'center',
+                    marginTop: '24px',
+                    marginBottom: '8px',
+                    color: themeData.text,
+                    width: '100%'
+                  }}>
+                    {link.title}
+                  </h3>
+                );
+              }
+              
+              if (!link.url) return null;
+
+              return (
+                <a
+                  key={link.id || i}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '14px 20px',
+                    borderRadius: '14px',
+                    background: accent,
+                    color: btnTextColor,
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '15px',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    boxShadow: `0 4px 16px ${accent}44`,
+                    animationDelay: `${i * 0.07}s`,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
+                >
+                  <span style={{ fontSize: '20px', flexShrink: 0 }}>{link.icon || '🌐'}</span>
+                  <span style={{ flex: 1, textAlign: 'center' }}>{link.title}</span>
+                </a>
+              );
+            })}
           </div>
 
           {/* Empty state */}
