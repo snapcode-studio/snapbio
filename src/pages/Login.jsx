@@ -1,19 +1,31 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function Login() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
+  const handleAuth = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    const provider = new GoogleAuthProvider();
+    setErrorMsg('');
+
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      let user;
+      if (isLogin) {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        user = result.user;
+      } else {
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        user = result.user;
+      }
 
       // Check if user exists in db, if not create default profile
       const userRef = doc(db, 'users', user.uid);
@@ -22,41 +34,87 @@ export default function Login() {
       if (!userSnap.exists()) {
         await setDoc(userRef, {
           email: user.email,
-          displayName: user.displayName,
           createdAt: new Date().toISOString(),
           bioProfile: {
-            username: user.email.split('@')[0],
-            title: user.displayName,
+            username: user.uid.substring(0, 8),
+            title: "Moja Strona",
             description: "Twój krótki opis...",
             theme: "dark",
             links: []
           }
-        }, { merge: true }); // Merge true so we don't overwrite SnapMenu data if exists
+        }, { merge: true });
       }
 
       navigate('/dashboard');
     } catch (error) {
-      console.error("Login failed", error);
-      alert("Błąd logowania: " + error.message);
+      console.error("Auth failed", error);
+      setErrorMsg("Błąd: " + error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full p-8 bg-white rounded-2xl shadow-lg text-center">
-        <h1 className="text-3xl font-bold mb-2">SnapBio</h1>
-        <p className="text-gray-500 mb-8">Stwórz swój profesjonalny Link-in-bio.</p>
-        
-        <button 
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-3 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition disabled:opacity-50"
-        >
-          {loading ? "Logowanie..." : "Zaloguj przez Google"}
-        </button>
+    <>
+      <nav>
+        <div className="navbar__bar glass animate-fade-up" style={{ animationDelay: '0.1s' }}>
+          <div className="logo-wrap">
+            <img src="/logo.webp" alt="Logo" className="logo-img" onError={(e) => e.target.style.display='none'} />
+            SnapBio
+          </div>
+        </div>
+      </nav>
+      
+      <div className="container hero">
+        <div className="hero-content animate-fade-up" style={{ animationDelay: '0.2s' }}>
+          <h1>Link w Bio.<br/>Design klasy<br/>Premium.</h1>
+          <p style={{ fontSize: '1.1rem', marginTop: '1rem', maxWidth: '400px' }}>
+            Zarządzaj swoimi linkami i wizerunkiem w social mediach.
+          </p>
+        </div>
+
+        <div className="auth-box card animate-fade-up" style={{ animationDelay: '0.3s' }}>
+          <h2 style={{ marginBottom: '1.5rem' }}>{isLogin ? "Zaloguj się" : "Zarejestruj się"}</h2>
+          <form onSubmit={handleAuth}>
+            <input 
+              type="email" 
+              placeholder="Adres e-mail" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Hasło" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+            />
+            {isLogin && (
+              <div style={{ textAlign: 'right', marginTop: '-4px', marginBottom: '12px' }}>
+                <a href="#" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s' }}>Zapomniałeś hasła?</a>
+              </div>
+            )}
+            <button type="submit" disabled={loading} className="btn btn-primary">
+              {loading ? "Przetwarzanie..." : "Rozpocznij"}
+            </button>
+          </form>
+          <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem' }}>
+            <a 
+              href="#" 
+              onClick={(e) => { e.preventDefault(); setIsLogin(!isLogin); setErrorMsg(''); }}
+              style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }}
+            >
+              {isLogin ? "Nie masz konta? Zarejestruj się" : "Masz już konto? Zaloguj się"}
+            </a>
+          </p>
+          {errorMsg && (
+            <div style={{ color: '#ff453a', textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}>
+              {errorMsg}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

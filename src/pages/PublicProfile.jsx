@@ -6,29 +6,43 @@ export default function PublicProfile() {
   // Here we would fetch data from Firestore where bioProfile.username === username
 
   return (
-    <div className="min-h-screen bg-pink-50 flex flex-col items-center pt-20 px-4">
-      <div className="w-full max-w-md bg-white/50 backdrop-blur-md rounded-[2rem] p-8 shadow-xl border border-white">
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 bg-gradient-to-tr from-pink-400 to-purple-500 rounded-full mb-4 shadow-lg"></div>
-          <h1 className="text-2xl font-bold text-gray-900">{username}</h1>
-          <p className="text-gray-600 mt-2 text-center">To jest publiczny profil SnapBio.</p>
+    <>
+      <nav>
+        <div className="navbar__bar glass animate-fade-up" style={{ animationDelay: '0.1s' }}>
+          <div className="logo-wrap">
+            <img src="/logo.webp" alt="Logo" className="logo-img" onError={(e) => e.target.style.display='none'} />
+            SnapBio
+          </div>
+        </div>
+      </nav>
+
+      <div className="container hero" style={{ minHeight: '70vh' }}>
+        <div className="card animate-fade-up" style={{ maxWidth: '400px', width: '100%', margin: '0 auto', animationDelay: '0.2s', textAlign: 'center', padding: '40px' }}>
+          <div style={{ width: '96px', height: '96px', margin: '0 auto 1.5rem', background: 'linear-gradient(to top right, #333, #666)', borderRadius: '50%', border: '4px solid #0a0a0c', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}></div>
+          <h1 style={{ fontSize: '24px', letterSpacing: '-0.02em', marginBottom: '8px' }}>{username || "Twoja Nazwa"}</h1>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>
+            Twój krótki, minimalistyczny opis. Czysta elegancja i zero zbędnych elementów.
+          </p>
           
-          <div className="w-full mt-8 space-y-4">
-             <a href="#" className="block w-full py-4 text-center bg-white rounded-2xl shadow-sm hover:shadow-md transition font-medium text-gray-800 border border-gray-100">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+             <a href="#" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
                Rezerwuj wizytę (Booksy)
              </a>
-             <a href="#" className="block w-full py-4 text-center bg-white rounded-2xl shadow-sm hover:shadow-md transition font-medium text-gray-800 border border-gray-100">
+             <a href="#" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none' }}>
                Instagram
              </a>
-             <a href="#" className="block w-full py-4 text-center bg-white rounded-2xl shadow-sm hover:shadow-md transition font-medium text-gray-800 border border-gray-100">
+             <a href="#" className="btn btn-primary" style={{ width: '100%', textDecoration: 'none' }}>
                Nasz Cennik
              </a>
           </div>
-        </div>
-        <div className="mt-12 text-center">
-          <a href="/" className="text-xs text-gray-400 font-medium hover:text-gray-600">Stworzone w SnapBio</a>
+          
+          <div style={{ marginTop: '2.5rem' }}>
+            <a href="/" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none', fontFamily: "'Geist Mono', monospace" }}>
+              SnapBio by Snap Code
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
