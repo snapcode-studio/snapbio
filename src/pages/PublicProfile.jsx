@@ -101,7 +101,7 @@ export default function PublicProfile() {
       {/* Inject Google Fonts for chosen font */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;600;700;800&display=swap');`}</style>
 
-      <div style={pageStyle}>
+      <main style={pageStyle}>
         <div style={{ ...cardStyle, position: 'relative' }}>
           {/* Share Button */}
           <button 
@@ -216,7 +216,7 @@ export default function PublicProfile() {
             {(profile.links || []).filter(l => l.title).map((link, i) => {
               if (link.type === 'header') {
                 return (
-                  <h3 key={link.id || i} style={{
+                  <h2 key={link.id || i} style={{
                     fontSize: '20px',
                     fontWeight: 700,
                     textAlign: 'center',
@@ -227,7 +227,7 @@ export default function PublicProfile() {
                     letterSpacing: '-0.02em'
                   }}>
                     {link.title}
-                  </h3>
+                  </h2>
                 );
               }
               
@@ -272,7 +272,7 @@ export default function PublicProfile() {
                       </span>
                     </div>
                     <div>
-                      <h3 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 800, letterSpacing: '-0.02em' }}>{link.title || 'Odkryj Nasze Menu'}</h3>
+                      <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: 800, letterSpacing: '-0.02em' }}>{link.title || 'Odkryj Nasze Menu'}</h2>
                       <p style={{ margin: 0, fontSize: '14px', opacity: 0.9, lineHeight: 1.5, fontWeight: 500 }}>Przeglądaj dania, sprawdzaj alergeny i zamawiaj prosto ze swojego telefonu.</p>
                     </div>
                   </a>
@@ -373,7 +373,7 @@ export default function PublicProfile() {
             </p>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
