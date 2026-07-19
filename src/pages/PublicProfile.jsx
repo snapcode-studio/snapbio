@@ -29,6 +29,16 @@ export default function PublicProfile() {
         setLoading(false);
       }
     })();
+    
+    // Set canonical link for SEO
+    let link = document.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "canonical";
+      document.head.appendChild(link);
+    }
+    link.href = `https://bio.getsnap.space/${username}`;
+    
   }, [username]);
 
   if (loading) return (
