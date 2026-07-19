@@ -111,6 +111,15 @@ function SortableLink({ link, onChange, onDelete }) {
                 />
                 Rozmiar: Połowa (Dwa w rzędzie)
               </label>
+              <select 
+                value={link.animation || ''} 
+                onChange={e => onChange({ ...link, animation: e.target.value })}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderRadius: '8px', color: 'var(--text-secondary)', padding: '4px 8px', fontSize: '12px', marginLeft: 'auto' }}
+              >
+                <option value="">Brak animacji</option>
+                <option value="wiggle">Trzęsienie</option>
+                <option value="pulse">Pulsowanie</option>
+              </select>
             </div>
           </div>
         </>

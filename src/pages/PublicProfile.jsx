@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { THEMES } from '../components/ThemeEditor';
+import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 
 export default function PublicProfile() {
   const { username } = useParams();
@@ -48,9 +49,7 @@ export default function PublicProfile() {
   const themeData = THEMES.find(t => t.id === themeId) || THEMES[0];
   const accent = profile.accentColor || themeData.accent;
   const fontFamily = profile.font || 'Inter';
-  const isLight = themeData.bg > '#888888';
-  const linkTextColor = isLight ? '#111' : themeData.btnText || '#000';
-
+  
   // Determine if accent is light or dark for button text
   const hexToRgb = (hex) => {
     const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
@@ -107,11 +106,22 @@ export default function PublicProfile() {
 
           {/* Bio */}
           {profile.bio && (
-            <p style={{ fontSize: '14px', color: themeData.text + 'aa', textAlign: 'center', marginBottom: '28px', maxWidth: '320px', lineHeight: 1.5 }}>
+            <div style={{ fontSize: '15px', color: themeData.text, opacity: 0.8, marginBottom: '16px', maxWidth: '400px', textAlign: 'center' }}>
               {profile.bio}
-            </p>
+            </div>
           )}
-          {!profile.bio && <div style={{ marginBottom: '28px' }} />}
+
+          {/* Social Icons Row */}
+          {(profile.socials?.instagram || profile.socials?.tiktok || profile.socials?.facebook || profile.socials?.twitter) && (
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '32px' }}>
+              {profile.socials.instagram && <a href={profile.socials.instagram} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Instagram size={28} /></a>}
+              {profile.socials.tiktok && <a href={profile.socials.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Music2 size={28} /></a>}
+              {profile.socials.facebook && <a href={profile.socials.facebook} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Facebook size={28} /></a>}
+              {profile.socials.twitter && <a href={profile.socials.twitter} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text, opacity: 0.9, transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}><Twitter size={28} /></a>}
+            </div>
+          )}
+
+          {!profile.bio && !profile.socials && <div style={{ marginBottom: '28px' }} />}
 
           {/* Links */}
           <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
@@ -144,7 +154,7 @@ export default function PublicProfile() {
                       flexDirection: 'column',
                       padding: '24px',
                       borderRadius: '20px',
-                      background: `linear-gradient(145deg, ${accent}dd, ${accent}88), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop') center/cover`,
+                      background: `linear-gradient(135deg, ${accent}E6, ${accent}B3)`,
                       color: btnTextColor,
                       textDecoration: 'none',
                       position: 'relative',
@@ -210,6 +220,7 @@ export default function PublicProfile() {
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}66`; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${accent}44`; }}
+                  className={link.animation ? `anim-${link.animation}` : ''}
                 >
                   {link.icon && link.icon.startsWith('http') ? (
                     <img src={link.icon} alt="" style={{ width: '20px', height: '20px', borderRadius: '4px', flexShrink: 0 }} />

@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LinkEditor from '../components/LinkEditor';
 import ThemeEditor, { THEMES } from '../components/ThemeEditor';
+import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react'; // For Socials
 import SlugEditor from '../components/SlugEditor';
 import QrWidget from '../components/QrWidget';
 import EcosystemWidget from '../components/EcosystemWidget';
@@ -46,6 +47,7 @@ export default function Dashboard() {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [socials, setSocials] = useState({ instagram: '', tiktok: '', facebook: '', twitter: '' });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -58,7 +60,8 @@ export default function Dashboard() {
       let p = DEFAULT_PROFILE;
       if (snap.exists()) {
         const data = snap.data();
-        p = { ...DEFAULT_PROFILE, ...(data.bioProfile || {}) };
+        const bioProfile = data.bioProfile || {};
+        p = { ...DEFAULT_PROFILE, ...bioProfile };
 
         // Check SnapMenu connection - query menuItems subcollection
         try {
@@ -87,6 +90,7 @@ export default function Dashboard() {
       setName(p.name || '');
       setBio(p.bio || '');
       setAvatarUrl(p.avatarUrl || '');
+      setSocials(p.socials || { instagram: '', tiktok: '', facebook: '', twitter: '' });
     });
     return () => unsubscribe();
   }, [navigate]);
@@ -104,6 +108,7 @@ export default function Dashboard() {
         name,
         bio,
         avatarUrl,
+        socials,
       };
       await updateDoc(doc(db, 'users', user.uid), { bioProfile: updated });
       setProfile(updated);
@@ -234,6 +239,16 @@ export default function Dashboard() {
                 {bio || 'Twój opis...'}
               </div>
 
+              {/* Social Icons Row */}
+              {(socials.instagram || socials.tiktok || socials.facebook || socials.twitter) && (
+                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '24px' }}>
+                  {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Instagram size={20} /></a>}
+                  {socials.tiktok && <a href={socials.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Music2 size={20} /></a>}
+                  {socials.facebook && <a href={socials.facebook} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Facebook size={20} /></a>}
+                  {socials.twitter && <a href={socials.twitter} target="_blank" rel="noopener noreferrer" style={{ color: themeData.text }}><Twitter size={20} /></a>}
+                </div>
+              )}
+
               {/* Preview Links */}
               <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start' }}>
                 {links.slice(0, 5).map(link => {
@@ -260,7 +275,7 @@ export default function Dashboard() {
                         flexDirection: 'column',
                         padding: '16px',
                         borderRadius: '16px',
-                        background: `linear-gradient(145deg, ${accentColor}dd, ${accentColor}88), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop') center/cover`,
+                        background: `linear-gradient(135deg, ${accentColor}E6, ${accentColor}B3)`,
                         color: themeData.btnText || '#000',
                         position: 'relative',
                         overflow: 'hidden',
@@ -290,7 +305,7 @@ export default function Dashboard() {
                       alignItems: 'center',
                       gap: '8px',
                       width: link.halfWidth ? 'calc(50% - 4px)' : '100%'
-                    }}>
+                    }} className={link.animation ? `anim-${link.animation}` : ''}>
                       {link.icon && link.icon.startsWith('http') ? (
                         <img src={link.icon} alt="" style={{ width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0 }} />
                       ) : (
@@ -339,6 +354,15 @@ export default function Dashboard() {
                     </button>
                   )}
                 </div>
+              </div>
+
+              {/* Social Icons Setup */}
+              <div style={{ marginTop: '20px' }}>
+                <span className="input-label">Social Media (Złote ikony pod opisem)</span>
+                <input type="url" placeholder="Instagram URL" value={socials.instagram} onChange={e => setSocials({ ...socials, instagram: e.target.value })} style={{ marginTop: '8px', marginBottom: '8px' }} />
+                <input type="url" placeholder="TikTok URL" value={socials.tiktok} onChange={e => setSocials({ ...socials, tiktok: e.target.value })} style={{ marginBottom: '8px' }} />
+                <input type="url" placeholder="Facebook URL" value={socials.facebook} onChange={e => setSocials({ ...socials, facebook: e.target.value })} style={{ marginBottom: '8px' }} />
+                <input type="url" placeholder="Twitter (X) URL" value={socials.twitter} onChange={e => setSocials({ ...socials, twitter: e.target.value })} style={{ marginBottom: '0' }} />
               </div>
             </div>
           </div>
