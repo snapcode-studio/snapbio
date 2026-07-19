@@ -165,10 +165,15 @@ export default function PublicProfile() {
 
               if (!link.url) return null;
 
+              let finalUrl = link.url;
+              if (finalUrl && !finalUrl.match(/^https?:\/\//)) {
+                finalUrl = `https://${finalUrl}`;
+              }
+
               return (
                 <a
                   key={link.id || i}
-                  href={link.url}
+                  href={finalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -204,16 +209,11 @@ export default function PublicProfile() {
           )}
 
           {/* Footer — Ecosystem branding */}
-          <div style={{ marginTop: '40px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <p style={{ fontSize: '11px', color: themeData.text + '40', lineHeight: 1.6 }}>
-              Bio napędza{' '}
-              <a href="https://bio.getsnap.space" style={{ color: themeData.text + '60', textDecoration: 'underline' }}>SnapBio</a>
-              {' '}od{' '}
-              <a href="https://getsnap.space" style={{ color: themeData.text + '60', textDecoration: 'underline' }}>Snap Code Studio</a>
+          <div style={{ marginTop: '6rem', paddingTop: '2rem', textAlign: 'center', opacity: 0.6, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <p style={{ fontSize: '13px', fontFamily: "'Inter', sans-serif" }}>
+              Bio napędza <a href="https://bio.getsnap.space" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'inherit', textDecoration: 'underline', textDecorationColor: 'rgba(255,255,255,0.3)', textUnderlineOffset: '4px' }}>SnapBio</a> 
+              {' '}od <a href="https://getsnap.space" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, color: 'inherit', textDecoration: 'underline', textDecorationColor: 'rgba(255,255,255,0.3)', textUnderlineOffset: '4px' }}>Snap Code Studio</a>.
             </p>
-            <a href="https://bio.getsnap.space" style={{ fontSize: '10px', color: themeData.text + '30', textDecoration: 'none', fontFamily: "'Geist Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Utwórz swój profil →
-            </a>
           </div>
         </div>
       </div>

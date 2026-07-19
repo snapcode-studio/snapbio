@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../firebase';
+import { auth, db, storage } from '../firebase';
 import { doc, getDoc, updateDoc, setDoc, collection, getDocs, limit, query } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LinkEditor from '../components/LinkEditor';
 import ThemeEditor, { THEMES } from '../components/ThemeEditor';
@@ -128,6 +129,23 @@ export default function Dashboard() {
 
   const publicUrl = profile.slug ? `https://bio.getsnap.space/${profile.slug}` : null;
   const themeData = THEMES.find(t => t.id === theme) || THEMES[0];
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !user) return;
+    try {
+      setSaving(true);
+      const storageRef = ref(storage, `avatars/${user.uid}_${Date.now()}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setAvatarUrl(url);
+    } catch (err) {
+      console.error(err);
+      alert('Błąd podczas przesyłania zdjęcia. Sprawdź reguły Firebase Storage.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <>
@@ -262,7 +280,28 @@ export default function Dashboard() {
               <span className="input-label">Profil</span>
               <input type="text" placeholder="Twoja nazwa" value={name} onChange={e => setName(e.target.value)} style={{ marginTop: '8px', marginBottom: '8px' }} />
               <input type="text" placeholder="Krótki opis (bio)" value={bio} onChange={e => setBio(e.target.value)} style={{ marginBottom: '8px' }} />
-              <input type="url" placeholder="URL zdjęcia profilowego" value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)} style={{ marginBottom: 0 }} />
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px' }}>Zdjęcie profilowe</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+                    background: avatarUrl ? `url(${avatarUrl}) center/cover no-repeat` : 'rgba(255,255,255,0.1)',
+                    border: '1px solid var(--border-light)'
+                  }} />
+                  <label style={{
+                    cursor: 'pointer', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)',
+                    padding: '10px 16px', borderRadius: '12px', fontSize: '13px', fontWeight: 600, transition: 'background 0.2s'
+                  }}>
+                    {saving ? 'Przesyłanie...' : 'Wgraj zdjęcie'}
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} disabled={saving} />
+                  </label>
+                  {avatarUrl && (
+                    <button type="button" onClick={() => setAvatarUrl('')} style={{ background: 'transparent', border: 'none', color: '#ff453a', cursor: 'pointer', fontSize: '13px', fontWeight: 600, padding: '8px' }}>
+                      Usuń
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
